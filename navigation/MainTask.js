@@ -17,6 +17,8 @@ import HomeReports from '../src/reports/HomeReports';
 import SearchBook from '../src/bookCheck/SearchBook';
 import TableBooks from '../src/bookCheck/TableBooks';
 import DetailReport from '../src/reports/DetailReport';
+import HomeBooks from '../src/bookCheck/HomeBooks';
+import ViewBooks from '../src/bookCheck/ViewBooks';
 const Stack = createNativeStackNavigator();
 
 const MainStack = () => {
@@ -71,6 +73,16 @@ const MainStack = () => {
           name='ResetPass'
           component={ResetPass}
         />
+                      <Stack.Screen
+          name='HomeBooks'
+          component={HomeBooks}
+        />
+                              <Stack.Screen
+          name='ViewBooks'
+          component={ViewBooks}
+        />
+
+
 
       </Stack.Navigator>
     </NavigationContainer>

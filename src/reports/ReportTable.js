@@ -25,7 +25,7 @@ const ReportTable = ({ data }) => {
                             <TouchableHighlight  onPress={() => {  navigateToDetailReport({incidencia: incidencia}) }}>
                             <DataTable.Row key={index} style={styles.Row}>
                                 <DataTable.Cell>
-                                    {incidencia.date}
+                                    {incidencia.created_at}
                                 </DataTable.Cell>
                                 <DataTable.Cell>{incidencia.description}</DataTable.Cell>
                                 <DataTable.Cell>{incidencia.status}</DataTable.Cell>

@@ -48,26 +48,26 @@ export default function Home({ navigation }) {
       <TouchableOpacity style={styles.icon} onPress={() => setModalVisible(!modalVisible)} activeOpacity={0.3}>
         <AntDesign name='user' size={35} color='#000' />
       </TouchableOpacity>
-      {rolLoaded && (rol === 'profesor') && (
+      {rolLoaded && (rol === 'PROFESOR') && (
       <Button
         title="Incidencias"
         buttonStyle={styles.button}
         ViewComponent={LinearGradient}
         linearGradientProps={{
-          colors: ['#FFA07A', '#00FF7F'],
+          colors: ['#368f3f', '#368f3f'],
           start: { x: 0, y: 0 },
           end: { x: 1, y: 0 },
         }}
         onPress={() => navigation.navigate('HomeReports')}
       />)}
 
-      {rolLoaded && (rol === 'coordinador TIC' || rol === 'directivo') && (
+      {rolLoaded && (rol === 'COORDINADOR TIC' || rol === 'DIRECTIVO') && (
         <Button
           title="Revisar incidencias"
           buttonStyle={styles.button}
           ViewComponent={LinearGradient}
           linearGradientProps={{
-            colors: ['#FFA07A', '#00FF7F'],
+            colors: ['#368f3f', '#368f3f'],
             start: { x: 0, y: 0 },
             end: { x: 1, y: 0 },
           }}
@@ -80,11 +80,11 @@ export default function Home({ navigation }) {
         buttonStyle={styles.button}
         ViewComponent={LinearGradient}
         linearGradientProps={{
-          colors: ['#FFA07A', '#00FF7F'],
+          colors: ['#368f3f', '#368f3f'],
           start: { x: 0, y: 0 },
           end: { x: 1, y: 0 },
         }}
-        onPress={() => navigation.navigate('SearchBook')}
+        onPress={() => navigation.navigate('HomeBooks')}
       />
 
 <Modal visible={modalVisible} transparent={true} animationType='slide'>
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#85FEE6',
+    backgroundColor: '#b8f7d4',
   },  containerModal: {
     flex: 1,
     justifyContent: 'center',

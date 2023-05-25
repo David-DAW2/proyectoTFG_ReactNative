@@ -1,7 +1,6 @@
 import React, { useState, useEffect} from 'react';
 import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
 import {
     SafeAreaView,
     ScrollView,
@@ -9,7 +8,6 @@ import {
     StyleSheet,
     Text,
     useColorScheme,
-  
     View,
     TextInput
 } from 'react-native';
@@ -35,7 +33,7 @@ export function NewReport({navigation}) {
     });
 
 const navegateToMyReports=()=>{
-    navigation.navigate('MyReports')
+    navigation.navigate('HomeReports')
 }
     useEffect(() => {
         const getData = async () => {
@@ -135,7 +133,7 @@ const styles = StyleSheet.create({
 
     },
     header: {
-        backgroundColor: '#FFA07A',
+        backgroundColor: '#368f3f',
         padding: 10,
 
 

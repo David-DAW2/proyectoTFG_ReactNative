@@ -13,7 +13,7 @@ export default function Login({ navigation }) {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
 
-  const [rol, setRol] = useState('profesor');
+  const [rol, setRol] = useState('PROFESOR');
   const handleSelectChange = (itemValue) => {
     setRol(itemValue);
   };
@@ -86,9 +86,9 @@ export default function Login({ navigation }) {
 
   return (
     <LinearGradient
-      colors={['#a6d7e7', '#54ec6a']}
+      colors={['#b8f7d4', '#b8f7d4']}
       start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
+      end={{ x: 0, y: 0 }}
       style={styles.container}
     >
       <Text style={styles.Text}>Usuario</Text>
@@ -108,9 +108,9 @@ export default function Login({ navigation }) {
           style={styles.picker}
           placeholder={"Elija rol"}
         >
-          <Picker.Item label="profesor" value="profesor" />
-          <Picker.Item label="coordinador TIC" value="coordinador TIC" />
-          <Picker.Item label="directivo" value="directivo" />
+          <Picker.Item label="profesor" value="PROFESOR" />
+          <Picker.Item label="coordinador TIC" value="COORDINADOR TIC" />
+          <Picker.Item label="directivo" value="DIRECTIVO" />
         </Picker>
       </View>
       <View style={styles.buttonContainer}>
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   button: {
-    backgroundColor: '#FFA07A',
+    backgroundColor: '#0c9cee',
     borderRadius: 10,
   },
 });

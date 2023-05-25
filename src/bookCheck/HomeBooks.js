@@ -4,7 +4,7 @@ import { Button } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 
 
-export default function HomeReports({navigation}) {
+export default function HomeBooks({navigation}) {
 
     React.useLayoutEffect(() => {
         navigation.setOptions({ headerShown: false });
@@ -20,7 +20,7 @@ export default function HomeReports({navigation}) {
                         end: { x: 3, y: 0 },
                       }}
 
-                    onPress={() => { navigation.navigate('NewReport') }} title={"Nueva Incidencia"}></Button>
+                    onPress={() => { navigation.navigate('SearchBook') }} title={"Nueva revisión"}></Button>
             <Button buttonStyle={styles.button} 
                ViewComponent={LinearGradient}
                linearGradientProps={{
@@ -28,7 +28,7 @@ export default function HomeReports({navigation}) {
                    start: { x: 0, y: 0 },
                    end: { x: 3, y: 0 },
                  }}
-onPress={()=>{navigation.navigate('MyReports')}} title={"Mis Incidencias"} ></Button>
+onPress={()=>{navigation.navigate('ViewBooks')}} title={"Mis revisiones"} ></Button>
 
         </View>
     )

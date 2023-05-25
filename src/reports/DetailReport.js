@@ -37,7 +37,7 @@ export default function DetailReport({ route }) {
     <View style={styles.container}>
       <Text style={styles.text}>{incidencia.status}</Text>
       <Text style={styles.text}>{incidencia.description}</Text>
-      <Text style={styles.text}>{incidencia.date}</Text>
+      <Text style={styles.text}>{incidencia.created_at}</Text>
       {incidencia.observation != '' ? (
         <Text style={styles.text}>{incidencia.observation}</Text>
       ) : (
