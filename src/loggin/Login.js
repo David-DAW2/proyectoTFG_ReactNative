@@ -1,13 +1,12 @@
 import React, { useState,useEffect } from 'react';
 import { Button } from '@rneui/themed';
-import { View, TextInput, StyleSheet, Alert } from 'react-native';
+import { View, TextInput, StyleSheet, Alert,Image } from 'react-native';
 import { Picker } from "@react-native-picker/picker";
 import { Text } from 'react-native-paper';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import LinearGradient from 'react-native-linear-gradient';
 import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
-
 export default function Login({ navigation }) {
   React.useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -91,6 +90,11 @@ export default function Login({ navigation }) {
       end={{ x: 0, y: 0 }}
       style={styles.container}
     >
+        <Image
+    source={require('../images/escudoMachado.jpg')
+  }     style={styles.image}
+
+  />
       <Text style={styles.Text}>Usuario</Text>
       <View style={styles.inputContainer} >
         <TextInput style={styles.input} value={user} onChangeText={setUser} />
@@ -125,6 +129,15 @@ export default function Login({ navigation }) {
 
 
 const styles = StyleSheet.create({
+  imageContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  image: {
+    width: 200,
+    height: 200,
+    resizeMode: 'contain',
+  },
   picker: {
     alignItems: 'center',
     justifyContent: 'center', 

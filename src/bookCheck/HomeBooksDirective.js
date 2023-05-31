@@ -4,7 +4,7 @@ import { Button } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 
 
-export default function HomeBooks({ navigation }) {
+export default function HomeBooksDirective({ navigation }) {
 
   React.useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -28,7 +28,7 @@ export default function HomeBooks({ navigation }) {
           end: { x: 3, y: 0 },
         }}
 
-        onPress={() => { navigation.navigate('SearchBook') }} title={"Nueva revisión"}></Button>
+        onPress={() => { navigation.navigate('ViewBooksDirective') }} title={"Todas las revisiones"}></Button>
       <Button buttonStyle={styles.button}
         ViewComponent={LinearGradient}
         linearGradientProps={{
@@ -36,7 +36,7 @@ export default function HomeBooks({ navigation }) {
           start: { x: 0, y: 0 },
           end: { x: 3, y: 0 },
         }}
-        onPress={() => { navigation.navigate('ViewBooks') }} title={"Mis revisiones"} ></Button>
+        onPress={() => { navigation.navigate('ViewBooksStatusAndStage') }} title={"Revisiones por estado y etapa"} ></Button>
 
     </View>
   )

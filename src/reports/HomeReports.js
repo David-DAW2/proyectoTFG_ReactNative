@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, StyleSheet} from "react-native";
+import { View, StyleSheet,TouchableOpacity,Image} from "react-native";
 import { Button } from 'react-native-elements';
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -12,6 +12,14 @@ export default function HomeReports({navigation}) {
     
     return (
         <View style={styles.container} >
+           <TouchableOpacity style={styles.image} activeOpacity={0.3}>
+
+<Image
+  source={require('../images/escudoMachado.jpg')
+  } style={styles.image}
+
+/>
+</TouchableOpacity>
             <Button buttonStyle={styles.button} 
                     ViewComponent={LinearGradient}
                     linearGradientProps={{
@@ -35,6 +43,14 @@ onPress={()=>{navigation.navigate('MyReports')}} title={"Mis Incidencias"} ></Bu
 }
 
 const styles = StyleSheet.create({
+  image: {
+    position:'absolute',
+    width: 120,
+    height: 120,
+    resizeMode: 'contain',
+    top:20
+
+  },
     container: {
         flex: 1,
         flexDirection: 'column',

@@ -2,66 +2,29 @@ import React, { useState, useEffect, useRef } from "react";
 import { View, Text, TextInput, StyleSheet, Alert } from 'react-native'
 import { Button } from '@rneui/themed';
 import { Select, Box, NativeBaseProvider, Center, extendTheme, TextArea, CheckIcon, ScrollView } from "native-base";
-
+import revisiones from "../revisiones";
+import { DataTable } from 'react-native-paper';
 import { Table, Row, Rows } from 'react-native-table-component';
+import { useNavigation } from '@react-navigation/native';
 
 import SelectDropdown from 'react-native-select-dropdown'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-
-
-export default function ViewBooks({ navigation }) {
+export default function ViewBooksStatusAndStage({ navigation }) {
   React.useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
-  const [options, setOptions] = useState([]);
+
 
   const [userId, setUserId] = useState('');
   const [token, setToken] = useState('');
-  const [unitySelected, setUnitySelected] = useState('');
-  const [subjectSelected, setSubjectSelected] = useState('');
-  const etapas = ['ENTREGA', '1º EVALUACION', '2º EVALUACION', 'RECOGIDA'];
-  const [etapa, setEtapa] = useState('');
-  const [selectedEtapa, setSelectedEtapa] = useState(false);
+  const estados = ['BIEN', 'REGULAR', 'MAL', "NO REVISADO"]
+  const etapas = ['ENTREGA', 'EVALUACION 1', 'EVALUACION 2', 'RECOGIDA']
+  const [etapa, setEtapa] = useState('')
+  const [estado, setEstado] = useState('')
+  const [selectedEtapa, setSelectedEtapa] = useState(false)
   const [reviewData, setReviewData] = useState([]);
-
-  const handleSelect = (selectedItem, index) => {
-    setUnitySelected(selectedItem.unity_name);
-    setSubjectSelected(selectedItem.subject_name);
-  };
-
-  const getReviews = () => {
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    };
-
-    axios
-      .get('http://localhost:8000/api/reviews/students', {
-        headers,
-        params: {
-          user_id: userId,
-          subject_name: subjectSelected,
-          review_type: etapa,
-          unity_name: unitySelected,
-        },
-      })
-      .then((response) => {
-        console.log("datos devueltos =>", response.data);
-        setReviewData(response.data);
-      })
-      .catch((error) => {
-        console.log('Error en los datos', error);
-      });
-  };
-
-  useEffect(() => {
-    /*  console.log(subjectSelected)
-      console.log(unitySelected)
-      console.log(etapa)
-      console.log(userId)
-      console.log(token)*/
-  }, [setUnitySelected, subjectSelected, etapa]);
-
+ const [datosCargados,setDatosCargados]=useState(false);
   useEffect(() => {
     const getData = async () => {
       try {
@@ -74,49 +37,57 @@ export default function ViewBooks({ navigation }) {
 
     getData();
   }, []);
-
   useEffect(() => {
-    const getOptions = () => {
-      const headers = {
-        Authorization: `Bearer ${token}`,
-      };
-      axios
-        .get(`http://localhost:8000/api/taughts/${userId}`, { headers })
-        .then((response) => {
-          setOptions(response.data);
-        })
-        .catch((error) => {
-          console.log('Error al obtener opciones:', error);
-        });
+    console.log(reviewData)
+    setDatosCargados(true)
+  }, [reviewData])
+  const getReviewsStatus = () => {
+    const headers = {
+      Authorization: `Bearer ${token}`,
     };
 
-    if (token && userId) {
-      getOptions();
-    }
-  }, [token, userId]);
+    axios
+      .get('http://localhost:8000/api/allUsersReviews', {
+        headers,
+        params: {
+          status: estado,
+          review_type: etapa,
+        },
+      })
+      .then((response) => {
+        console.log("datos devueltos =>", response.data);
+        setReviewData(response.data);
+      })
+      .catch((error) => {
+        console.log('Error en los datos', error);
+      });
+  };
 
   const dataTable = reviewData && reviewData.data
     ? reviewData.data.map((item) => {
-        return [item.surnames, item.status, item.observation];
-      })
+      return [item.surnames, item.unity_name, item.subject_name, item.observation, item.user_name];
+    })
     : [];
-  const tableHead = ['Nombre', 'Estado', 'Observaciones'];
+  const tableHead = ['Nombre alumno', 'curso', 'Asignatura', 'Observaciones', 'Nombre profesor'];
   const tableData = [tableHead, ...dataTable];
 
   return (
     <NativeBaseProvider style={styles.baseColor} theme={theme}>
       <ScrollView style={styles.baseColor}>
-        <View >
         <View style={styles.container}>
-          <SelectDropdown style={styles.drop}
-            data={options.data}
-            onSelect={handleSelect}
+          <SelectDropdown
+            data={etapas}
+            onSelect={(selectedItem, index) => {
+              setEtapa(selectedItem)
+            }}
             buttonTextAfterSelection={(selectedItem, index) => {
-              return selectedItem.unity_name;
+
+              return selectedItem;
             }}
             rowTextForSelection={(item, index) => {
-              return item.unity_name + '/' + item.subject_name;
+              return item;
             }}
+
             dropdownIconPosition={'right'}
             buttonStyle={styles.dropdown2BtnStyle}
             buttonTextStyle={styles.dropdown2BtnTxtStyle}
@@ -127,18 +98,19 @@ export default function ViewBooks({ navigation }) {
           />
           <Text></Text>
           <SelectDropdown
-            data={etapas}
+            data={estados}
             onSelect={(selectedItem, index) => {
-              setEtapa(selectedItem);
-              console.log(etapa);
+              setEstado(selectedItem)
             }}
             buttonTextAfterSelection={(selectedItem, index) => {
-              setSelectedEtapa(true);
+              setSelectedEtapa(true)
               return selectedItem;
+
             }}
             rowTextForSelection={(item, index) => {
               return item;
             }}
+
             dropdownIconPosition={'right'}
             buttonStyle={styles.dropdown2BtnStyle}
             buttonTextStyle={styles.dropdown2BtnTxtStyle}
@@ -147,30 +119,39 @@ export default function ViewBooks({ navigation }) {
             rowTextStyle={styles.dropdown2RowTxtStyle}
             defaultButtonText="Elija una opción"
           />
-</View>
-          {(unitySelected !== '') && (subjectSelected !== '') && (selectedEtapa) && (
-            <Button type="solid" onPress={getReviews} style={styles.button}>
-              Mostrar Resultados
-            </Button>
-          )}
-  
-          <View style={styles.tableContainer}>
-            <Table borderStyle={styles.tableBorderStyle}>
-              {tableData.map((rowData, index) => (
-                <Row
-                  key={index}
-                  data={rowData}
-                  textStyle={styles.rowTextStyle}
-                  style={index === 0 ? styles.headerRowStyle : styles.dataRowStyle}
-                />
-              ))}
-            </Table>
-          </View>
         </View>
+        <Text></Text>
+        {(datosCargados) && (<Button type="solid" style={styles.button} onPress={() => getReviewsStatus()} >
+          Mostrar Resultados
+        </Button>)}
+        {(selectedEtapa && reviewData && reviewData.data && reviewData.data.length > 0) ? (
+  <View style={styles.tableContainer}>
+    <Table borderStyle={styles.tableBorderStyle}>
+      {tableData.map((rowData, index) => (
+        <Row
+          key={index}
+          data={rowData}
+          textStyle={styles.rowTextStyle}
+          style={index === 0 ? styles.headerRowStyle : styles.dataRowStyle}
+        />
+      ))}
+    </Table>
+  </View>
+) : (
+  <Text style={styles.textNo}>No hay datos</Text>
+)}
+
+
+
+
       </ScrollView>
     </NativeBaseProvider>
-  );
-              }  
+  )
+
+
+
+
+}
 const newColorTheme = {
   brand: {
     900: '#5B8DF6',
@@ -182,27 +163,37 @@ const newColorTheme = {
 const theme = extendTheme({
   colors: '#b8f7d4'
 });
+
 const styles = StyleSheet.create({
-  colorBase:{
+
+  textNo:{fontSize:20,
+    fontWeight: 'bold',
+    textAlign:"center",
+    marginTop:50
+},
+
+  colorBase: {
     backgroundColor: '#b8f7d4'
 
   },
 
-  drop:{
-    marginLeft:100
+  drop: {
+    marginLeft: 100
   },
   baseColor: { backgroundColor: '#b8f7d4' },
   container: {
-    marginLeft:80
-    ,marginBottom:30,  colors: '#b8f7d4'
+    marginTop: 50,
 
+    marginBottom: 30
 
   },
   dropdown2BtnStyle: {
-    width: '80%',
+    width: '100%',
     height: 50,
     backgroundColor: '#FFF',
     borderRadius: 8,
+    borderBottomColor: '#000',
+    borderBottomEndRadius: 5,
     borderColor: '#000',
     marginTop: 10,
   },
@@ -215,16 +206,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#444',
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
-    marginTop: 10,
+
   },
   dropdown2RowStyle: { backgroundColor: '#FFF', borderBottomColor: '#C5C5C5' },
   dropdown2RowTxtStyle: {
     color: '#000',
-    textAlign: 'center',
     fontWeight: 'bold',
   },
   tableContainer: {
-    backgroundColor:"#FFF",
+    backgroundColor: "#FFF",
     borderWidth: 1,
     borderColor: '#000',
     marginTop: 20,
@@ -235,17 +225,18 @@ const styles = StyleSheet.create({
   },
   headerRowStyle: {
     backgroundColor: 'green',
-    height:50
+    height: 50
   },
   dataRowStyle: {
-    height:50
+    height: 50
 
   },
   rowTextStyle: {
     textAlign: 'center',
-    fontWeight:"bold"
+    fontWeight: "bold"
   },
   button: {
     marginTop: 20,
   },
-});
+
+}); 

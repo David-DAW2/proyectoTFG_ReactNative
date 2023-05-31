@@ -22,17 +22,20 @@ const ReportReviewTable = ({ data }) => {
                     </DataTable.Header>
 
                     {data && data.length > 0 ? (
-                        data.map((incidencia, index) => (
-                            <TouchableHighlight  onPress={() => {  navigateToDetailReport({incidencia: incidencia}) }}>
-                            <DataTable.Row key={index} style={styles.Row}>
-                                <DataTable.Cell>
-                                    {incidencia.date}
-                                </DataTable.Cell>
-                                <DataTable.Cell>{incidencia.description}</DataTable.Cell>
-                                <DataTable.Cell>{incidencia.status}</DataTable.Cell>
-                            </DataTable.Row>
-                            </TouchableHighlight>
-                        ))
+                       data.map((incidencia) => (
+                        <TouchableHighlight
+                          key={incidencia.id}
+                          onPress={() => {
+                            navigateToDetailReport({ incidencia: incidencia });
+                          }}
+                        >
+                          <DataTable.Row style={styles.Row}>
+                            <DataTable.Cell>{incidencia.date}</DataTable.Cell>
+                            <DataTable.Cell>{incidencia.description}</DataTable.Cell>
+                            <DataTable.Cell>{incidencia.status}</DataTable.Cell>
+                          </DataTable.Row>
+                        </TouchableHighlight>
+                      ))
                     ) : (
                         <DataTable.Row>
                             <DataTable.Cell>No hay datos disponibles</DataTable.Cell>

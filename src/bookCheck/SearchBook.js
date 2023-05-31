@@ -17,16 +17,16 @@ export default function SearchBook({ navigation }) {
   const [unitySelected, setUnitySelected] = useState('')
   const [subjectSelected, setSubjectSelected] = useState('')
   const [students, setStudents] = useState([])
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [selectedOptions, setSelectedOptions] = useState([null]);
   const [observations, setObservations] = useState([])
   const [reviewForSend, SetReviewForSend] = useState([])
-  const etapas = ['ENTREGA', 'INTER 1', 'INTER 2', 'RECOGIDA']
+  const etapas = ['ENTREGA', 'EVALUACION 1', 'EVALUACION 2', 'RECOGIDA']
   const [etapa, setEtapa] = useState('')
   const [revisionData, setRevisionData] = useState([]);
   const [revFinalizada, setRevFinalizada] = useState(false)
   const [selectedEtapa, setSelectedEtapa] = useState(false)
 
-  const estados = ['BIEN', 'REGULAR', 'MAL']
+  const estados = ['BIEN', 'REGULAR', 'MAL', "NO REVISADO"]
   React.useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
@@ -42,20 +42,31 @@ export default function SearchBook({ navigation }) {
 
   };
   const handleFinalizarRevision = () => {
-    const newData = state.DataTable.map((rowData, index) => {
-      const [id, , observacionesComponent] = rowData;
+    const newData = state.DataTable.reduce((acc, rowData, index) => {
       const estado = selectedOptions[index];
       const observaciones = observations[index];
-      return {
-        id,
-        estado,
-        observaciones,
-      };
-    });
-
-    setRevisionData(newData);
-    setRevFinalizada(true)
+      const id = students && students.data && students.data[index] ? students.data[index].id : null;
+  
+      // Verificar si el estado y la observación tienen valores definidos
+      if (estado !== undefined || observaciones !== undefined) {
+        acc.push({
+          id,
+          estado,
+          observaciones,
+        });
+      }
+  
+      return acc;
+    }, []);
+  
+    if (newData.length > 0) {
+      setRevisionData(newData);
+      setRevFinalizada(true);
+    } else {
+      Alert.alert('No se encontraron objetos con estado y observación definidos.');
+    }
   };
+  
 
   useEffect(() => {
     if (revisionData.length > 0) {
@@ -91,6 +102,8 @@ export default function SearchBook({ navigation }) {
 
     // Configurar los encabezados de la solicitud
     const headers = {
+      'Content-Type': 'application/json',
+
       Authorization: `Bearer ${token}`,
     };
     const params = {
@@ -172,10 +185,9 @@ export default function SearchBook({ navigation }) {
 
 
   const dataTable = students && students.data
-    ? students.data.map((item, index) => {
+  ? students.data.map((item, index) => {
       return [
-        item.id,
-        item.surnames,
+        `${item.id} - ${item.surnames} `,
         <SelectDropdown
           data={estados}
           onSelect={(selectedItem) => {
@@ -194,27 +206,29 @@ export default function SearchBook({ navigation }) {
           rowStyle={styles.dropdown2RowStyle}
           rowTextStyle={styles.dropdown2RowTxtStyle}
           defaultButtonText="estado"
+          defaultValue={selectedOptions[index] || null}
         />,
-        <TextArea onChangeText={(textValue) => {
-          setObservations((prevOptions) => {
-            const updatedOptions = [...prevOptions];
-            updatedOptions[index] = textValue;
-            return updatedOptions;
-          });
-        }} ></TextArea>
-
+        <TextArea
+          style={styles.textAreaStyle} // Agrega esta línea para definir el estilo del TextArea
+          onChangeText={(textValue) => {
+            setObservations((prevOptions) => {
+              const updatedOptions = [...prevOptions];
+              updatedOptions[index] = textValue;
+              return updatedOptions;
+            });
+          }}
+        ></TextArea>
       ];
     })
-    : [];
-  
+  : [];
+
   const state = {
-    HeadTable: ['id', 'nombre', 'Estado', 'observaciones'],
+    HeadTable: ['nombre', 'Estado', 'observaciones'],
     DataTable: dataTable,
   };
   return (
-
-    <NativeBaseProvider theme={theme}>
-      <ScrollView contentContainerStyle={styles.scrollViewContainer}>
+    <NativeBaseProvider style={styles.baseColor} theme={theme}>
+      <ScrollView contentContainerStyle={styles.baseColor}>
         <View style={styles.container}>
           <SelectDropdown
             data={options.data}
@@ -242,13 +256,13 @@ export default function SearchBook({ navigation }) {
             }}
             buttonTextAfterSelection={(selectedItem, index) => {
               setSelectedEtapa(true)
-
+  
               return selectedItem;
             }}
             rowTextForSelection={(item, index) => {
               return item;
             }}
-
+  
             dropdownIconPosition={'right'}
             buttonStyle={styles.dropdown2BtnStyle}
             buttonTextStyle={styles.dropdown2BtnTxtStyle}
@@ -259,13 +273,13 @@ export default function SearchBook({ navigation }) {
           />
         </View>
         <Text></Text>
-        {(unitySelected != '') && (subjectSelected != '')&&((!revFinalizada)) &&(selectedEtapa) && (<Button type="solid" style={styles.button} onPress={() => getStudents()} >
+        {(unitySelected != '') && (subjectSelected != '') && ((!revFinalizada)) && (selectedEtapa) && (<Button type="solid" style={styles.button} onPress={() => getStudents()} >
           Mostrar Resultados
         </Button>)}
-
+  
         <Text></Text>
-        {(unitySelected != '') && (subjectSelected != '')&&(!revFinalizada)&&(selectedEtapa) && (<NativeBaseProvider>
-          <View>
+        {(unitySelected != '') && (subjectSelected != '') && (!revFinalizada) && (selectedEtapa) && (<NativeBaseProvider>
+          <View style={styles.tableColor}>
             <Table borderStyle={{ borderWidth: 1, borderColor: '#ffa1d2' }}>
               <Row data={state.HeadTable} />
               <Rows data={state.DataTable} />
@@ -273,23 +287,22 @@ export default function SearchBook({ navigation }) {
           </View>
         </NativeBaseProvider>)}
         <Text></Text>
-        {(unitySelected != '') && (subjectSelected != '')&&((!revFinalizada)) &&(selectedEtapa)  && (
+        {(unitySelected != '') && (subjectSelected != '') && ((!revFinalizada)) && (selectedEtapa) && (
           <Button type="solid" style={styles.button} onPress={handleFinalizarRevision}>
             Finalizar Revisión
           </Button>
         )}
-
-
-        {(revFinalizada) && (<View>
+  
+  
+        {(revFinalizada) && (
           <Button type="solid" color="secondary" style={styles.button} onPress={sendReview}>
             Enviar
           </Button>
-        </View>)}
-
+        )}
+  
       </ScrollView>
     </NativeBaseProvider>
-  )
-
+  );
 }
 
 const newColorTheme = {
@@ -301,9 +314,12 @@ const newColorTheme = {
 };
 
 const theme = extendTheme({
-  colors: newColorTheme,
+  colors: '#b8f7d4'
 });
 const styles = StyleSheet.create({
+  baseColor:{backgroundColor:'#b8f7d4'},
+  tableColor:{backgroundColor:'#FFF'},
+
   dropdown2BtnStyle: {
     width: '80%',
     height: 50,
@@ -328,6 +344,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   container: {
+    backgroundColor: '#b8f7d4',
+
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
@@ -343,6 +361,13 @@ const styles = StyleSheet.create({
     padding: 10,
 
 
+  },
+  textAreaStyle: {
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 8,
+    padding: 8,
+    height: 100,
   },
   headerText: {
     fontSize: 24,

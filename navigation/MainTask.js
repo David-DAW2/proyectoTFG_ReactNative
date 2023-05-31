@@ -19,6 +19,10 @@ import TableBooks from '../src/bookCheck/TableBooks';
 import DetailReport from '../src/reports/DetailReport';
 import HomeBooks from '../src/bookCheck/HomeBooks';
 import ViewBooks from '../src/bookCheck/ViewBooks';
+import ViewBooksDirective from '../src/bookCheck/ViewBooksDirective';
+import HomeBooksDirective from '../src/bookCheck/HomeBooksDirective';
+import ViewBooksStatusAndStage from '../src/bookCheck/ViewBooksStatusAndStage';
+import ManagedUsers from '../src/managedUser/ManagedUsers';
 const Stack = createNativeStackNavigator();
 
 const MainStack = () => {
@@ -82,9 +86,27 @@ const MainStack = () => {
           component={ViewBooks}
         />
 
+<Stack.Screen
+          name='ViewBooksDirective'
+          component={ViewBooksDirective}
+        />
+        <Stack.Screen
+          name='HomeBooksDirective'
+          component={HomeBooksDirective}
+        />
 
+<Stack.Screen
+          name='ViewBooksStatusAndStage'
+          component={ViewBooksStatusAndStage}
+        />
 
+<Stack.Screen
+          name='ManagedUsers'
+          component={ManagedUsers}
+        />
       </Stack.Navigator>
+
+      
     </NavigationContainer>
   );
 }

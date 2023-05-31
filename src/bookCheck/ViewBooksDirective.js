@@ -2,15 +2,15 @@ import React, { useState, useEffect, useRef } from "react";
 import { View, Text, TextInput, StyleSheet, Alert } from 'react-native'
 import { Button } from '@rneui/themed';
 import { Select, Box, NativeBaseProvider, Center, extendTheme, TextArea, CheckIcon, ScrollView } from "native-base";
-
+import revisiones from "../revisiones";
+import { DataTable } from 'react-native-paper';
 import { Table, Row, Rows } from 'react-native-table-component';
+import { useNavigation } from '@react-navigation/native';
 
 import SelectDropdown from 'react-native-select-dropdown'
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-
-
-export default function ViewBooks({ navigation }) {
+export default function ViewBooksDirective({ navigation }) {
   React.useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
@@ -28,6 +28,7 @@ export default function ViewBooks({ navigation }) {
   const handleSelect = (selectedItem, index) => {
     setUnitySelected(selectedItem.unity_name);
     setSubjectSelected(selectedItem.subject_name);
+    setEtapa(selectedItem.review_type);
   };
 
   const getReviews = () => {
@@ -36,10 +37,9 @@ export default function ViewBooks({ navigation }) {
     };
 
     axios
-      .get('http://localhost:8000/api/reviews/students', {
+      .get('http://localhost:8000/api/reviews', {
         headers,
         params: {
-          user_id: userId,
           subject_name: subjectSelected,
           review_type: etapa,
           unity_name: unitySelected,
@@ -81,9 +81,10 @@ export default function ViewBooks({ navigation }) {
         Authorization: `Bearer ${token}`,
       };
       axios
-        .get(`http://localhost:8000/api/taughts/${userId}`, { headers })
+        .get(`http://localhost:8000/api/allReviews`, { headers })
         .then((response) => {
           setOptions(response.data);
+          console.log(options)
         })
         .catch((error) => {
           console.log('Error al obtener opciones:', error);
@@ -112,10 +113,10 @@ export default function ViewBooks({ navigation }) {
             data={options.data}
             onSelect={handleSelect}
             buttonTextAfterSelection={(selectedItem, index) => {
-              return selectedItem.unity_name;
+              return '(' + selectedItem.review_type + ') '+selectedItem.unity_name + '/' + selectedItem.subject_name ;
             }}
             rowTextForSelection={(item, index) => {
-              return item.unity_name + '/' + item.subject_name;
+              return '(' + item.review_type + ') '+item.unity_name + '/' + item.subject_name ;
             }}
             dropdownIconPosition={'right'}
             buttonStyle={styles.dropdown2BtnStyle}
@@ -126,33 +127,13 @@ export default function ViewBooks({ navigation }) {
             defaultButtonText="Elija una opción"
           />
           <Text></Text>
-          <SelectDropdown
-            data={etapas}
-            onSelect={(selectedItem, index) => {
-              setEtapa(selectedItem);
-              console.log(etapa);
-            }}
-            buttonTextAfterSelection={(selectedItem, index) => {
-              setSelectedEtapa(true);
-              return selectedItem;
-            }}
-            rowTextForSelection={(item, index) => {
-              return item;
-            }}
-            dropdownIconPosition={'right'}
-            buttonStyle={styles.dropdown2BtnStyle}
-            buttonTextStyle={styles.dropdown2BtnTxtStyle}
-            dropdownStyle={styles.dropdown2DropdownStyle}
-            rowStyle={styles.dropdown2RowStyle}
-            rowTextStyle={styles.dropdown2RowTxtStyle}
-            defaultButtonText="Elija una opción"
-          />
+        
 </View>
-          {(unitySelected !== '') && (subjectSelected !== '') && (selectedEtapa) && (
+    
             <Button type="solid" onPress={getReviews} style={styles.button}>
               Mostrar Resultados
             </Button>
-          )}
+       
   
           <View style={styles.tableContainer}>
             <Table borderStyle={styles.tableBorderStyle}>
@@ -171,6 +152,7 @@ export default function ViewBooks({ navigation }) {
     </NativeBaseProvider>
   );
               }  
+
 const newColorTheme = {
   brand: {
     900: '#5B8DF6',
@@ -193,16 +175,18 @@ const styles = StyleSheet.create({
   },
   baseColor: { backgroundColor: '#b8f7d4' },
   container: {
-    marginLeft:80
-    ,marginBottom:30,  colors: '#b8f7d4'
+    marginTop:50,
 
+    marginBottom:30
 
   },
   dropdown2BtnStyle: {
-    width: '80%',
+    width: '100%',
     height: 50,
     backgroundColor: '#FFF',
     borderRadius: 8,
+    borderBottomColor:'#000',
+    borderBottomEndRadius:5,
     borderColor: '#000',
     marginTop: 10,
   },
@@ -215,13 +199,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#444',
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
-    marginTop: 10,
+    
   },
-  dropdown2RowStyle: { backgroundColor: '#FFF', borderBottomColor: '#C5C5C5' },
+  dropdown2RowStyle: { backgroundColor: '#FFF', borderBottomColor: '#C5C5C5',
+  height: 90, // Ajusta la altura de las celdas según tus necesidades
+ },
   dropdown2RowTxtStyle: {
     color: '#000',
-    textAlign: 'center',
+    textAlign: 'left',
     fontWeight: 'bold',
+    fontSize: 14,
   },
   tableContainer: {
     backgroundColor:"#FFF",
