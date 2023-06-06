@@ -29,7 +29,7 @@ export default function Home({ navigation }) {
 
   useEffect(() => {
     loadData();
-  }, []);
+  }, [rol]);
 
   const selecRolReview=(()=>{
     if (rol=='DIRECTIVO') {

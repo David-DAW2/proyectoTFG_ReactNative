@@ -12,23 +12,24 @@ const ReportTable = ({ data }) => {
     };
     return (
         <View style={styles.container}>
-            <ScrollView  style={styles.container}>
-                <DataTable>
-                    <DataTable.Header style={styles.tableHeader}>
-                        <DataTable.Title>Fecha</DataTable.Title>
-                        <DataTable.Title>Descripción</DataTable.Title>
-                        <DataTable.Title>Estado</DataTable.Title>
-                    </DataTable.Header>
+            <ScrollView >
+                <DataTable >
+                <DataTable.Header style={styles.tableHeader}
+          >
+            <DataTable.Title textStyle={{fontWeight:'bold', fontSize:20, color:'white'}}>Id usuario</DataTable.Title>
+            <DataTable.Title textStyle={{fontWeight:'bold', fontSize:20, color:'white'}}>Descripción</DataTable.Title>
+            <DataTable.Title textStyle={{fontWeight:'bold', fontSize:20, color:'white', marginLeft:10}}>Estado</DataTable.Title>
+          </DataTable.Header>
 
                     {data && data.length > 0 ? (
                         data.map((incidencia, index) => (
                             <TouchableHighlight  onPress={() => {  navigateToDetailReport({incidencia: incidencia}) }}>
                             <DataTable.Row key={index} style={styles.Row}>
-                                <DataTable.Cell>
-                                    {incidencia.created_at}
+                                <DataTable.Cell  textStyle={{fontFamily:'Feather',marginLeft:10}}>
+                                    {incidencia.date}
                                 </DataTable.Cell>
-                                <DataTable.Cell>{incidencia.description}</DataTable.Cell>
-                                <DataTable.Cell>{incidencia.status}</DataTable.Cell>
+                                <DataTable.Cell  textStyle={{fontFamily:'Feather',marginLeft:10}}>{incidencia.description}</DataTable.Cell>
+                                <DataTable.Cell  textStyle={{fontFamily:'Feather',marginLeft:10}}>{incidencia.status}</DataTable.Cell>
                             </DataTable.Row>
                             </TouchableHighlight>
                         ))
@@ -44,18 +45,20 @@ const ReportTable = ({ data }) => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor:'#85FEE6',
+    headerText: {
+        fontSize: 20,
+        fontWeight: 'bold',
+      },
+      container: {
+        backgroundColor: '#85FEE6',
         padding: 10,
         borderRadius: 10,
         margin: 10,
-    },
-    tableHeader: {
-        backgroundColor: '#FDF4F5',
-    },
-    Row: {
-        borderWidth: 1,
-    }
+      },
+      tableHeader: {
+        backgroundColor: '#007932',
+        alignItems:'center'
+      },
 });
 
 export default ReportTable;

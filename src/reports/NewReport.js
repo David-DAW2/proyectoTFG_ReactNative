@@ -111,12 +111,13 @@ const navegateToMyReports=()=>{
                 </RadioButton.Group>
             </View>
             <TextArea
+            style={{backgroundColor:'white'}}
                 onChangeText={onChangeText}
                 value={text}
                 placeholder='Introduzca la incidencia..'
             />
             <Text></Text>
-            <Button type="solid" style={styles.button} onPress={() => { handleSave(); enviarDatos(id,text,selectedOption) }}>
+            <Button type="solid" buttonStyle={styles.button} onPress={() => { handleSave(); enviarDatos(id,text,selectedOption) }}>
                 Guardar
             </Button>
         </View>
@@ -147,14 +148,19 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         marginBottom: 20,
+        marginTop: 40,
+
     },
     radioOption: {
         flexDirection: 'row',
         alignItems: 'center',
+
     },
     radioOptionText: {
         marginLeft: 5,
         fontSize: 16,
+        fontFamily:'Feather',
+        fontWeight:'bold'
     },
     input: {
         marginTop: 30,
@@ -167,9 +173,12 @@ const styles = StyleSheet.create({
         backgroundColor:'white'
     },
     button: {
-
-        backgroundColor: '#FFA07A',
-        marginTop: 40,
-        borderRadius: 10,
-    },
+        padding:'auto',
+        marginLeft:200,
+        marginTop:40,
+        width:150,
+        height:60,
+        borderRadius:10,
+        backgroundColor: '#007932'
+     }
 });

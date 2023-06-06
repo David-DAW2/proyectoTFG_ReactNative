@@ -23,6 +23,7 @@ import ViewBooksDirective from '../src/bookCheck/ViewBooksDirective';
 import HomeBooksDirective from '../src/bookCheck/HomeBooksDirective';
 import ViewBooksStatusAndStage from '../src/bookCheck/ViewBooksStatusAndStage';
 import ManagedUsers from '../src/managedUser/ManagedUsers';
+import DetailUser from '../src/managedUser/DetailUser';
 const Stack = createNativeStackNavigator();
 
 const MainStack = () => {
@@ -104,9 +105,14 @@ const MainStack = () => {
           name='ManagedUsers'
           component={ManagedUsers}
         />
-      </Stack.Navigator>
 
       
+<Stack.Screen
+          name='DetailUser'
+          component={DetailUser}
+        />
+      </Stack.Navigator>
+
     </NavigationContainer>
   );
 }

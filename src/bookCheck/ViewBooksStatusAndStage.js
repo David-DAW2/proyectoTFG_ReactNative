@@ -65,7 +65,7 @@ export default function ViewBooksStatusAndStage({ navigation }) {
 
   const dataTable = reviewData && reviewData.data
     ? reviewData.data.map((item) => {
-      return [item.surnames, item.unity_name, item.subject_name, item.observation, item.user_name];
+      return [item.name+" "+item.surnames, item.unity_name, item.subject_name, item.observation, item.user_name];
     })
     : [];
   const tableHead = ['Nombre alumno', 'curso', 'Asignatura', 'Observaciones', 'Nombre profesor'];

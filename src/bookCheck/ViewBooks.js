@@ -20,7 +20,7 @@ export default function ViewBooks({ navigation }) {
   const [token, setToken] = useState('');
   const [unitySelected, setUnitySelected] = useState('');
   const [subjectSelected, setSubjectSelected] = useState('');
-  const etapas = ['ENTREGA', '1º EVALUACION', '2º EVALUACION', 'RECOGIDA'];
+  const etapas = ['ENTREGA', 'EVALUACION 1', 'EVALUACION 2', 'RECOGIDA'];
   const [etapa, setEtapa] = useState('');
   const [selectedEtapa, setSelectedEtapa] = useState(false);
   const [reviewData, setReviewData] = useState([]);

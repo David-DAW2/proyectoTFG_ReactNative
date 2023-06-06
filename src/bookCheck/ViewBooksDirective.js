@@ -98,10 +98,10 @@ export default function ViewBooksDirective({ navigation }) {
 
   const dataTable = reviewData && reviewData.data
     ? reviewData.data.map((item) => {
-        return [item.surnames, item.status, item.observation];
+        return [item.name+" "+item.surnames, item.status, item.observation, item.user_id];
       })
     : [];
-  const tableHead = ['Nombre', 'Estado', 'Observaciones'];
+  const tableHead = ['Nombre', 'Estado', 'Observaciones', 'Nombre profesor'];
   const tableData = [tableHead, ...dataTable];
 
   return (

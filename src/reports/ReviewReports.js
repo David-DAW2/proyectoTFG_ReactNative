@@ -34,7 +34,7 @@ const ReviewReports = ({ navigation }) => {
     };
     const getIncidences = async () => {
         console.log(rol)
-        if (rol === "coordinador TIC") {
+        if (rol === "COORDINADOR TIC") {
             try {
                 const response = await axios.get(`http://localhost:8000/api/tic/incidences`, { headers });
                 console.log(response.data);

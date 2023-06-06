@@ -118,7 +118,7 @@ export default function Login({ navigation }) {
         </Picker>
       </View>
       <View style={styles.buttonContainer}>
-        <Button type="solid" onPress={() => {   loginVerify()}}>Acceder</Button>
+        <Button type="solid" buttonStyle={styles.buttonStyle} onPress={() => {   loginVerify()}}>Acceder</Button>
       </View>
 
     </LinearGradient>
@@ -148,6 +148,14 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     width: 250
   },
+  buttonStyle:{
+    padding:'auto',
+    marginTop:5,
+    width:200,
+    height:60,
+    borderRadius:10,
+    backgroundColor: '#007932'
+ },
   container: {
     flex: 1,
     paddingHorizontal: 20,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, TextInput, StyleSheet, Alert } from 'react-native'
+import { View, Text, TextInput,StyleSheet,  Alert } from 'react-native'
 import { Button } from '@rneui/themed';
 import { Select, Box, NativeBaseProvider, Center, extendTheme, TextArea, CheckIcon, ScrollView } from "native-base";
 import revisiones from "../revisiones";
