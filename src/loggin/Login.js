@@ -35,7 +35,7 @@ export default function Login({ navigation }) {
   const [pass, setPass] = useState('');
   useEffect(() => {
     const fetchCSRFCookie = async () => {
-      axios.get('http://localhost:8000/sanctum/csrf-cookie', { withCredentials: true })
+      axios.get('https://tfg-fmr.alwaysdata.net/back/public/sanctum/csrf-cookie', { withCredentials: true })
         .then(response => {
           console.log("Success", response)
         })
@@ -50,7 +50,7 @@ export default function Login({ navigation }) {
   
   const loginVerify = () => {
     axios
-      .post('http://localhost:8000/api/login', {
+      .post('https://tfg-fmr.alwaysdata.net/back/public/api/login', {
         email: user,
         password: pass,
         role: rol
@@ -164,9 +164,11 @@ const styles = StyleSheet.create({
   },
   Text: {
     marginTop: 40,
-    fontWeight: 'bold',
-    fontStyle: 'normal',
+
     fontSize: 15,
+    marginBottom:0,
+    fontFamily: 'NotoSansHK-Medium',
+
   },
   header: {
     backgroundColor: '#FFA07A',

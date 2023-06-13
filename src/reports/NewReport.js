@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {
@@ -18,12 +18,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios';
 
 
-export function NewReport({navigation}) {
+export function NewReport({ navigation }) {
     React.useLayoutEffect(() => {
         navigation.setOptions({ headerShown: false });
-      }, [navigation]);
-    
-    const [id,setID]=useState('')
+    }, [navigation]);
+
+    const [id, setID] = useState('')
     const [expanded, setExpanded] = useState(true);
     const [selectedOption, setSelectedOption] = useState('Tic');
     const [text, onChangeText] = React.useState('');
@@ -32,95 +32,97 @@ export function NewReport({navigation}) {
         text: '',
     });
 
-const navegateToMyReports=()=>{
-    navigation.navigate('HomeReports')
-}
+    const navegateToMyReports = () => {
+        navigation.navigate('HomeReports')
+    }
     useEffect(() => {
         const getData = async () => {
-          try {
-            const idStorage = await AsyncStorage.getItem('id');
-            setID(idStorage);
-          } catch (error) {
-            console.log('Error al obtener datos de AsyncStorage:', error);
-          }
-        };
-    
-        getData();
-      }, []);
-
-
-
-      const enviarDatos = async (id, descripcion,tipo) => {
-        try {
-          // Obtener el token de AsyncStorage
-          const token = await AsyncStorage.getItem('token');
-      
-          // Configurar los encabezados de la solicitud
-          const headers = {
-            Authorization: `Bearer ${token}`,
-          };
-          console.log(id)
-          console.log(descripcion)
-          console.log(tipo)
-
-          // Configurar el cuerpo de la solicitud
-          const data = {
-            user_id: id,
-            description: descripcion,
-            type:tipo
-          };
-      
-          // Realizar la llamada POST al endpoint
-          const response = await axios.post('http://localhost:8000/api/incidences', data, { headers }).then(response =>{
-            if (response.data.success) {
-                Alert.alert('Incidencia creada con éxito')
-                navegateToMyReports()
-                
+            try {
+                const idStorage = await AsyncStorage.getItem('id');
+                setID(idStorage);
+            } catch (error) {
+                console.log('Error al obtener datos de AsyncStorage:', error);
             }
-          })
-      
-          // Manejar la respuesta del servidor
-          console.log('Respuesta del servidor:', response.data);
-      
-          // Realizar cualquier acción adicional según sea necesario
+        };
+
+        getData();
+    }, []);
+
+
+
+    const enviarDatos = async (id, descripcion, tipo) => {
+        try {
+            // Obtener el token de AsyncStorage
+            const token = await AsyncStorage.getItem('token');
+
+            // Configurar los encabezados de la solicitud
+            const headers = {
+                Authorization: `Bearer ${token}`,
+            };
+            console.log(id)
+            console.log(descripcion)
+            console.log(tipo)
+
+            // Configurar el cuerpo de la solicitud
+            const data = {
+                user_id: id,
+                description: descripcion,
+                type: tipo
+            };
+
+            // Realizar la llamada POST al endpoint
+            const response = await axios.post('https://tfg-fmr.alwaysdata.net/back/public/api/incidences', data, { headers }).then(response => {
+                if (response.data.success) {
+                    Alert.alert('Incidencia creada con éxito')
+                    navegateToMyReports()
+
+                }
+            })
+
+            // Manejar la respuesta del servidor
+            console.log('Respuesta del servidor:', response.data);
+
+            // Realizar cualquier acción adicional según sea necesario
         } catch (error) {
-          console.log('Error al enviar los datos:', error);
-          // Manejar el error de acuerdo a tus necesidades
+            console.log('Error al enviar los datos:', error);
+            // Manejar el error de acuerdo a tus necesidades
         }
-      };
+    };
     const handleSave = () => {
-        setObjValues({selectedOption, text})
+        setObjValues({ selectedOption, text })
     }
 
     return (
         <NativeBaseProvider>
-        <View style={styles.container}>
-            <View style={styles.header}>
-                <Text style={styles.headerText}>Crear incidencia</Text>
+            <View style={styles.container}>
+                <View style={styles.header}>
+                    <Text style={styles.headerText}>Crear incidencia</Text>
+                </View>
+                <View style={styles.radioGroup}>
+                    <RadioButton.Group onValueChange={newValue => setSelectedOption(newValue)} value={selectedOption}>
+                        <View style={styles.radioOption}>
+                            <RadioButton style={{ fontFamily: 'NotoSansHK-Medium', }} value="TIC" />
+                            <Text style={styles.radioOptionText}>Indicencia TIC</Text>
+                        </View>
+                        <View style={styles.radioOption}>
+                            <RadioButton style={{ fontFamily: 'NotoSansHK-Medium', }} value="NO TIC" />
+                            <Text style={styles.radioOptionText}>Indicencia no TIC</Text>
+                        </View>
+                    </RadioButton.Group>
+                </View>
+                <TextArea
+                 fontSize={17}
+                 fontFamily={'NotoSansHK-Medium-Alphabetic'}
+                    style={{ backgroundColor: 'white' }}
+                    onChangeText={onChangeText}
+                    value={text}
+                    placeholder='Introduzca la incidencia..'
+                />
+                <Text></Text>
+                <Button type="solid" buttonStyle={styles.button} onPress={() => { handleSave(); enviarDatos(id, text, selectedOption) }}>
+                    Guardar
+                </Button>
             </View>
-            <View style={styles.radioGroup}>
-                <RadioButton.Group onValueChange={newValue => setSelectedOption(newValue)} value={selectedOption}>
-                    <View style={styles.radioOption}>
-                        <RadioButton value="TIC" />
-                        <Text style={styles.radioOptionText}>Indicencia TIC</Text>
-                    </View>
-                    <View style={styles.radioOption}>
-                        <RadioButton value="NO TIC" />
-                        <Text style={styles.radioOptionText}>Indicencia no TIC</Text>
-                    </View>
-                </RadioButton.Group>
-            </View>
-            <TextArea
-            style={{backgroundColor:'white'}}
-                onChangeText={onChangeText}
-                value={text}
-                placeholder='Introduzca la incidencia..'
-            />
-            <Text></Text>
-            <Button type="solid" buttonStyle={styles.button} onPress={() => { handleSave(); enviarDatos(id,text,selectedOption) }}>
-                Guardar
-            </Button>
-        </View>
         </NativeBaseProvider>
     );
 }
@@ -130,8 +132,7 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingHorizontal: 20,
         paddingTop: StatusBar.currentHeight,
-        backgroundColor:'#85FEE6'
-
+        backgroundColor: '#b8f7d4',
     },
     header: {
         backgroundColor: '#368f3f',
@@ -159,8 +160,8 @@ const styles = StyleSheet.create({
     radioOptionText: {
         marginLeft: 5,
         fontSize: 16,
-        fontFamily:'Feather',
-        fontWeight:'bold'
+        fontFamily: 'Feather',
+        fontWeight: 'bold'
     },
     input: {
         marginTop: 30,
@@ -170,15 +171,15 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         paddingTop: 0,
         borderRadius: 10,
-        backgroundColor:'white'
+        backgroundColor: 'white'
     },
     button: {
-        padding:'auto',
-        marginLeft:200,
-        marginTop:40,
-        width:150,
-        height:60,
-        borderRadius:10,
+        padding: 'auto',
+        marginLeft: 200,
+        marginTop: 40,
+        width: 150,
+        height: 60,
+        borderRadius: 10,
         backgroundColor: '#007932'
-     }
+    }
 });

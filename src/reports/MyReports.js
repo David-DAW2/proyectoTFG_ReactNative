@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import incidencias from "../incidencias";
-import { View, ScrollView, TouchableOpacity, Text,Alert } from "react-native";
+import { View, ScrollView, TouchableOpacity, Text,Alert ,StyleSheet} from "react-native";
 import ReportTable from "./ReportTable";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from "axios";
@@ -34,7 +34,7 @@ const MyReports = ({navigation}) => {
   };
   const getIncidences = async () => {
     try {
-      const response = await axios.get(`http://localhost:8000/api/user/incidences`,{ params,headers });
+      const response = await axios.get(`https://tfg-fmr.alwaysdata.net/back/public/api/user/incidences`,{ params,headers });
       console.log(response.data);
       setContenidoTabla(response.data.data);
     } catch (error) {
@@ -71,7 +71,7 @@ const MyReports = ({navigation}) => {
   );
 
   return (
-    <View>
+    <View style={styles.container}>
       <ReportTable data={slicedData} />
       <View style={{ flexDirection: "row", justifyContent: "center" }}>
         <TouchableOpacity
@@ -92,5 +92,10 @@ const MyReports = ({navigation}) => {
     </View>
   );
 };
+const styles = StyleSheet.create({
+  container:{    backgroundColor: '#b8f7d4',
+  height:1000
+}
+})
 
 export default MyReports;

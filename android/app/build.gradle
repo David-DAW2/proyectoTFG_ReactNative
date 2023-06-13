@@ -180,3 +180,6 @@ dependencies {
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
+project.ext.vectoricons = [
+  iconFontNames: ['NotoSansHK-Black.otf', 'NotoSansHK-Light.otf', 'NotoSansHK-Bold.otf','NotoSansHK-Medium.otf','NotoSansHK-regular.otf'], // Agrega aquí los nombres de tus fuentes de tipografía
+]

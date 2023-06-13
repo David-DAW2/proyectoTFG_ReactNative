@@ -1,7 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
 import Home from '../src/loggin/Home';
 import Login from '../src/loggin/Login';
@@ -24,6 +24,9 @@ import HomeBooksDirective from '../src/bookCheck/HomeBooksDirective';
 import ViewBooksStatusAndStage from '../src/bookCheck/ViewBooksStatusAndStage';
 import ManagedUsers from '../src/managedUser/ManagedUsers';
 import DetailUser from '../src/managedUser/DetailUser';
+import HomeCreate from '../src/create/HomeCreate';
+import CreateStudent from '../src/create/CreateStudent';
+import CreateTeacher from '../src/create/CreateTeacher';
 const Stack = createNativeStackNavigator();
 
 const MainStack = () => {
@@ -69,25 +72,37 @@ const MainStack = () => {
           name='ReviewReports'
           component={ReviewReports}
         />
-              <Stack.Screen
+        <Stack.Screen
           name='DetailReviewReport'
           component={DetailReviewReport}
         />
-       
-              <Stack.Screen
+
+        <Stack.Screen
           name='ResetPass'
           component={ResetPass}
         />
-                      <Stack.Screen
+        <Stack.Screen
           name='HomeBooks'
           component={HomeBooks}
         />
-                              <Stack.Screen
+        <Stack.Screen
           name='ViewBooks'
           component={ViewBooks}
         />
+           <Stack.Screen
+          name='CreateStudent'
+          component={CreateStudent}
+        />
+                   <Stack.Screen
+          name='CreateTeacher'
+          component={CreateTeacher}
+        />
+        <Stack.Screen
+          name='HomeCreate'
+          component={HomeCreate}
+        />
 
-<Stack.Screen
+        <Stack.Screen
           name='ViewBooksDirective'
           component={ViewBooksDirective}
         />
@@ -96,18 +111,18 @@ const MainStack = () => {
           component={HomeBooksDirective}
         />
 
-<Stack.Screen
+        <Stack.Screen
           name='ViewBooksStatusAndStage'
           component={ViewBooksStatusAndStage}
         />
 
-<Stack.Screen
+        <Stack.Screen
           name='ManagedUsers'
           component={ManagedUsers}
         />
 
-      
-<Stack.Screen
+
+        <Stack.Screen
           name='DetailUser'
           component={DetailUser}
         />
@@ -120,7 +135,7 @@ const MainStack = () => {
 export default MainStack;
 
 const styles = StyleSheet.create({
-    container: {
-      backgroundColor: '#85FEE6',
-    }
-  });
+  container: {
+    backgroundColor: '#85FEE6',
+  }
+});

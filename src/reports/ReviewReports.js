@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import incidencias from "../incidencias";
-import { View, ScrollView, TouchableOpacity, Text, Alert } from "react-native";
+import { View, ScrollView, TouchableOpacity, Text, Alert,StyleSheet } from "react-native";
 import ReportReviewTable from "./ReportReviewTable";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from "axios";
@@ -36,7 +36,7 @@ const ReviewReports = ({ navigation }) => {
         console.log(rol)
         if (rol === "COORDINADOR TIC") {
             try {
-                const response = await axios.get(`http://localhost:8000/api/tic/incidences`, { headers });
+                const response = await axios.get(`https://tfg-fmr.alwaysdata.net/back/public/api/tic/incidences`, { headers });
                 console.log(response.data);
                 setContenidoTabla(response.data.data);
             } catch (error) {
@@ -45,7 +45,7 @@ const ReviewReports = ({ navigation }) => {
             }
         } else {
             try {
-                const response = await axios.get(`http://localhost:8000/api/incidences`, { headers });
+                const response = await axios.get(`https://tfg-fmr.alwaysdata.net/back/public/api/incidences`, { headers });
                 console.log(response.data);
                 setContenidoTabla(response.data.data);
             } catch (error) {
@@ -87,7 +87,7 @@ const ReviewReports = ({ navigation }) => {
     );
 
     return (
-        <View>
+        <View style={styles.container}>
             <ReportReviewTable data={slicedData} />
             <View style={{ flexDirection: "row", justifyContent: "center" }}>
                 <TouchableOpacity
@@ -109,4 +109,9 @@ const ReviewReports = ({ navigation }) => {
     );
 };
 
+const styles = StyleSheet.create({
+    container:{    backgroundColor: '#b8f7d4',
+    height:1000
+}
+})
 export default ReviewReports;

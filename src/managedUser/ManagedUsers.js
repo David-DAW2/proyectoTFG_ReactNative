@@ -34,17 +34,17 @@ export default function ManagedUsers({ navigation }) {
   const [userId, setUserId] = useState('');
   const [token, setToken] = useState('');
   const [userData, setUserData] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1); // Estado para almacenar el número de página actual
-  const [itemsPerPage] = useState(10); // Número de elementos por página
+  const [currentPage, setCurrentPage] = useState(1); 
+  const [itemsPerPage] = useState(10);
   const [userForDetail, setUserForDetail] = useState([]);
   const [shouldNavigate, setShouldNavigate] = useState(false);
 
-useEffect(() => {
-  if (shouldNavigate) {
-    navigateToDetailUser({ userData: userForDetail });
-    setShouldNavigate(false); // Reiniciar el valor después de la navegación
-  }
-}, [shouldNavigate, userForDetail]);
+  useEffect(() => {
+    if (shouldNavigate) {
+      navigateToDetailUser({ userData: userForDetail });
+      setShouldNavigate(false);
+    }
+  }, [shouldNavigate, userForDetail]);
 
   useEffect(() => {
     const getData = async () => {
@@ -59,26 +59,28 @@ useEffect(() => {
   }, []);
 
   const getUserSearch = () => {
-    if (userSearch=='') {
+    if (userSearch == '') {
       Alert.alert('No se ha introducido ID de usuario')
-    }else{   if (token) {
-      const headers = {
-        authorization: `Bearer ${token}`
-      };
-      axios.get(`http://localhost:8000/api/user/${userSearch}`, { headers })
-        .then(response => {
-          setUserForDetail(response.data.data);
-          setShouldNavigate(true); // Establecer el valor para activar la navegación
+    } else {
+      if (token) {
+        const headers = {
+          authorization: `Bearer ${token}`
+        };
+        axios.get(`https://tfg-fmr.alwaysdata.net/back/public/api/user/${userSearch}`, { headers })
+          .then(response => {
+            setUserForDetail(response.data.data);
+            setShouldNavigate(true); 
 
- 
-        })
-        .catch(error => {
-          console.log('Error al obtener los usuarios:', error);
-          Alert.alert('No se ha encontrado el usuario')
 
-        });
-    }}
- 
+          })
+          .catch(error => {
+            console.log('Error al obtener los usuarios:', error);
+            Alert.alert('No se ha encontrado el usuario')
+
+          });
+      }
+    }
+
 
   }
 
@@ -87,7 +89,7 @@ useEffect(() => {
       const headers = {
         authorization: `Bearer ${token}`
       };
-      axios.get('http://localhost:8000/api/users', { headers })
+      axios.get('https://tfg-fmr.alwaysdata.net/back/public/api/users', { headers })
         .then(response => {
           setUserData(response.data);
         })
@@ -122,7 +124,7 @@ useEffect(() => {
             Buscar
           </Button>
           <Button type="solid" title={"Mostrar todos los usuarios"} buttonStyle={styles.buttonStyle} onPress={getUsers}>
-           
+
           </Button>
         </View>
         <View>
@@ -130,9 +132,9 @@ useEffect(() => {
           {(userData && userData.data && userData.data.length > 0) && (
             <DataTable>
               <DataTable.Header style={styles.tableHeader}>
-                <DataTable.Title textStyle={{fontWeight:'bold', fontSize:20, color:'white'}} style={styles.cell}>Name</DataTable.Title>
-                <DataTable.Title textStyle={{fontWeight:'bold', fontSize:20, color:'white'}}>Email</DataTable.Title>
-                <DataTable.Title textStyle={{fontWeight:'bold', fontSize:20, color:'white', marginLeft:10}}>id</DataTable.Title>
+                <DataTable.Title textStyle={{ fontWeight: 'bold', fontSize: 20, color: 'white' }} style={styles.cell}>Name</DataTable.Title>
+                <DataTable.Title textStyle={{ fontWeight: 'bold', fontSize: 20, color: 'white' }}>Email</DataTable.Title>
+                <DataTable.Title textStyle={{ fontWeight: 'bold', fontSize: 20, color: 'white', marginLeft: 10 }}>id</DataTable.Title>
               </DataTable.Header>
 
               {getCurrentPageItems().map(item => (
@@ -145,19 +147,25 @@ useEffect(() => {
                 >
 
                   <DataTable.Row key={item.id}>
-                    <DataTable.Cell textStyle={{fontFamily:'Feather',marginLeft:10}}   style={styles.cell}>{item.name}</DataTable.Cell>
-                    <DataTable.Cell textStyle={{fontFamily:'Feather',marginLeft:10}}>{item.email}</DataTable.Cell>
-                    <DataTable.Cell textStyle={{fontFamily:'Feather',marginLeft:10}}>{item.id}</DataTable.Cell>
+                    <DataTable.Cell textStyle={{ fontFamily: 'Feather', marginLeft: 10 }} style={styles.cell}>{item.name}</DataTable.Cell>
+                    <DataTable.Cell textStyle={{
+                      fontFamily: 'NotoSansHK-Medium',
+                      marginLeft: 10
+                    }}>{item.email}</DataTable.Cell>
+                    <DataTable.Cell textStyle={{
+                      fontFamily: 'NotoSansHK-Medium',
+                      marginLeft: 10
+                    }}>{item.id}</DataTable.Cell>
                   </DataTable.Row>
                 </TouchableHighlight>
 
               ))}
 
               <DataTable.Pagination
-                page={currentPage} // Establecer la página actual
-                numberOfPages={Math.ceil(userData.data.length / itemsPerPage)} // Calcular el número total de páginas
-                onPageChange={handlePageChange} // Manejar el cambio de página
-                label={`${((currentPage - 1) * itemsPerPage) + 1}-${Math.min(currentPage * itemsPerPage, userData.data.length)} of ${userData.data.length}`} // Etiqueta personalizada para mostrar la información de paginación
+                page={currentPage} 
+                numberOfPages={Math.ceil(userData.data.length / itemsPerPage)} 
+                onPageChange={handlePageChange} 
+                label={`${((currentPage - 1) * itemsPerPage) + 1}-${Math.min(currentPage * itemsPerPage, userData.data.length)} of ${userData.data.length}`} 
               />
             </DataTable>
           )}
@@ -180,14 +188,17 @@ const theme = extendTheme({
   colors: '#b8f7d4'
 });
 const styles = StyleSheet.create({
-  baseColor: { 
-  
-   
-    backgroundColor: '#b8f7d4',height:1000 },
+  baseColor: {
+
+
+    backgroundColor: '#b8f7d4', height: 1000
+  },
 
 
   TextIn: {
-    marginLeft:42,
+    fontFamily: 'NotoSansHK-Medium',
+
+    marginLeft: 42,
     marginTop: 30,
     width: '80%',
     height: 40,
@@ -197,12 +208,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     backgroundColor: 'white'
   },
-  cell: { flex: 2,
-  
-   },
+  cell: {
+    flex: 2,
+
+  },
   container: {
     backgroundColor: '#b8f7d4',
-    width:'100%',
+    width: '100%',
 
     flex: 1,
     justifyContent: 'center',
@@ -210,8 +222,8 @@ const styles = StyleSheet.create({
     marginTop: 40
   },
   Text: {
-    fontWeight: 'bold',
-    fontStyle: 'normal',
+    fontFamily: 'NotoSansHK-Medium',
+
     fontSize: 15,
   },
   header: {
@@ -252,22 +264,22 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingTop: 0,
     borderRadius: 10,
-        marginLeft:'25%',
+    marginLeft: '25%',
 
   },
-  buttonStyle:{
-    padding:'auto',
-    marginTop:10,
-    marginBottom:20,
-    marginLeft:'25%',
-    width:200,
-    height:60,
-    borderRadius:10,
+  buttonStyle: {
+    padding: 'auto',
+    marginTop: 10,
+    marginBottom: 20,
+    marginLeft: '25%',
+    width: 200,
+    height: 60,
+    borderRadius: 10,
     backgroundColor: '#007932'
- },
- tableHeader: {
-  backgroundColor: '#007932',
-  alignItems:'center'
-},
+  },
+  tableHeader: {
+    backgroundColor: '#007932',
+    alignItems: 'center'
+  },
 });
 

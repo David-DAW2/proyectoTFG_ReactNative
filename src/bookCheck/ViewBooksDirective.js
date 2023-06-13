@@ -25,6 +25,19 @@ export default function ViewBooksDirective({ navigation }) {
   const [selectedEtapa, setSelectedEtapa] = useState(false);
   const [reviewData, setReviewData] = useState([]);
 
+  const [observations, setObservations] = useState([])
+
+  const [revisionData, setRevisionData] = useState([]);
+  const [reviewForSend, SetReviewForSend] = useState([])
+  const [verEditar, setVerEditar] = useState(false)
+  const [validacionOk, setValidacionOk] = useState(true)
+
+  const estados = ['BIEN', 'REGULAR', 'MAL', "NO REVISADO"]
+
+  const [selectedOptions, setSelectedOptions] = useState([null]);
+  const [editar, setEditar] = useState(false)
+  const [cambiosApli, setCambiosApli] = useState(false)
+  const [estadosTabla, setEstadosTabla] = useState([])
   const handleSelect = (selectedItem, index) => {
     setUnitySelected(selectedItem.unity_name);
     setSubjectSelected(selectedItem.subject_name);
@@ -37,7 +50,7 @@ export default function ViewBooksDirective({ navigation }) {
     };
 
     axios
-      .get('http://localhost:8000/api/reviews', {
+      .get('https://tfg-fmr.alwaysdata.net/back/public/api/reviews', {
         headers,
         params: {
           subject_name: subjectSelected,
@@ -48,11 +61,18 @@ export default function ViewBooksDirective({ navigation }) {
       .then((response) => {
         console.log("datos devueltos =>", response.data);
         setReviewData(response.data);
+        setVerEditar(true)
+
       })
       .catch((error) => {
         console.log('Error en los datos', error);
       });
   };
+  const handleChangeEdit = () => {
+    setEditar(!editar)
+    setCambiosApli(false)
+  };
+
 
   useEffect(() => {
     /*  console.log(subjectSelected)
@@ -81,7 +101,7 @@ export default function ViewBooksDirective({ navigation }) {
         Authorization: `Bearer ${token}`,
       };
       axios
-        .get(`http://localhost:8000/api/allReviews`, { headers })
+        .get(`https://tfg-fmr.alwaysdata.net/back/public/api/allReviews`, { headers })
         .then((response) => {
           setOptions(response.data);
           console.log(options)
@@ -96,13 +116,176 @@ export default function ViewBooksDirective({ navigation }) {
     }
   }, [token, userId]);
 
-  const dataTable = reviewData && reviewData.data
-    ? reviewData.data.map((item) => {
-        return [item.name+" "+item.surnames, item.status, item.observation, item.user_id];
+  const ReviewTable = () => {
+    const dataTable = reviewData && reviewData.data
+      ? reviewData.data.map((item) => {
+        return [item.name + " " + item.surnames, item.status, item.observation];
       })
+      : [];
+    const tableHead = ['Nombre', 'Estado', 'Observaciones'];
+    const tableData = [tableHead, ...dataTable];
+
+    return (
+      <Table borderStyle={styles.tableBorderStyle}>
+        {tableData.map((rowData, index) => (
+          <Row
+            key={index}
+            data={rowData}
+            textStyle={styles.rowTextStyle}
+            style={index === 0 ? styles.headerRowStyle : styles.dataRowStyle}
+          />
+        ))}
+      </Table>
+    );
+  };
+
+
+  const dataTableEdit = reviewData && reviewData.data
+    ? reviewData.data.map((item, index) => {
+      return [
+        `(${item.student_id}${item.review_id}) - ${item.name} ${item.surnames}  `,
+        <SelectDropdown
+      data={estados}
+      defaultValue={reviewData.data[index].status}
+      onSelect={(selectedValue) => {
+        setReviewData((prevData) => {
+          const updatedData = { ...prevData };
+          updatedData.data[index].status = selectedValue;
+          return updatedData;
+        });
+      }}
+      buttonStyle={styles.dropdown2BtnStyle}
+      buttonTextStyle={styles.dropdown2BtnTxtStyle}
+    />,
+    <TextArea
+    fontFamily={'NotoSansHK-Medium-Alphabetic'}
+    fontSize={15}
+        style={styles.textAreaStyle}
+        onChangeText={(textValue) => {
+          setReviewData((prevData) => {
+            const updatedData = { ...prevData };
+            updatedData.data[index].observation = textValue;
+            return updatedData;
+          });
+        }}
+        value={reviewData.data[index].observation}
+
+      ></TextArea>
+      ];
+    })
     : [];
-  const tableHead = ['Nombre', 'Estado', 'Observaciones', 'Nombre profesor'];
-  const tableData = [tableHead, ...dataTable];
+
+  const state = {
+    HeadTable: ['nombre', 'Estado', 'observaciones'],
+    DataTable: dataTableEdit,
+  };
+
+
+  const isValidStatus = (estado) => {
+    const validStatus = ['BIEN', 'REGULAR', 'MAL', 'NO REVISADO'];
+    return validStatus.includes(estado);
+  };
+  const handleFinalizarRevision = () => {
+    const newData = state.DataTable.reduce((acc, rowData, index) => {
+      const estado = reviewData && reviewData.data && reviewData.data[index] ? reviewData.data[index].status : null;
+      const observaciones = reviewData && reviewData.data && reviewData.data[index] ? reviewData.data[index].observation : '';
+      const id = reviewData && reviewData.data && reviewData.data[index] ? reviewData.data[index].student_id : null;
+      const review_id = reviewData && reviewData.data && reviewData.data[index] ? reviewData.data[index].review_id : null;
+  
+      // Verificar si el estado y la observación tienen valores definidos y si el estado es válido
+      if (estado !== undefined && observaciones !== undefined && (estado==='BIEN' ||estado==='REGULAR' ||estado==='MAL' ||estado==='NO REVISADO' )) {
+        acc.push({
+          id,
+          review_id,
+          estado,
+          observaciones,
+        });
+      } else {
+        setValidacionOk(false);
+      }
+  
+      return acc;
+    }, []);
+  
+    if (newData.length > 0 && validacionOk) {
+      setRevisionData(newData);
+      setCambiosApli(true);
+    } else {
+      navigation.navigate('HomeBooks')
+      Alert.alert("Error en el campo estado, valores aceptados: 'BIEN', 'REGULAR', 'MAL', 'NO REVISADO'");
+      setValidacionOk(true)
+    }
+  };
+  
+
+
+  const createReviewForSend = () => {
+    const review = revisionData.map((ReviewData) => {
+      const review_id = ReviewData.review_id;
+      const review_type = etapa;
+      const status = ReviewData.estado;
+      const observation = ReviewData.observaciones;
+      const user_id = userId;
+      const unity_name = unitySelected;
+      const subject_name = subjectSelected;
+      const student_id = ReviewData.id;
+      return {
+        review_id,
+        review_type,
+        status,
+        observation,
+        user_id,
+        unity_name,
+        subject_name,
+        student_id,
+      };
+    });
+
+    SetReviewForSend(review);
+  };
+
+  useEffect(() => {
+    createReviewForSend();
+  }, [revisionData]);
+  
+  const sendReview = () => {
+
+
+    createReviewForSend()
+
+  
+
+    
+      const headers = {
+        'Content-Type': 'application/json',
+  
+        Authorization: `Bearer ${token}`,
+      };
+      const params = {
+        reviews: reviewForSend
+      }
+      console.log("datos a enviar" + params)
+      axios.put('https://tfg-fmr.alwaysdata.net/back/public/api/update/reviews', params, { headers })
+        .then(response => {
+          if (response.data) {
+  
+            Alert.alert("se ha actualizado la revisión con exito")
+            getReviews()
+            setEditar(false)
+            // navigation.navigate('HomeBooks')
+          }
+        }
+        ).catch(error => {
+          Alert.alert("Error al actualizar la revisión");
+          console.log(error)
+        })
+
+
+    
+
+    // Configurar los encabezados de la solicitud
+
+  }
 
   return (
     <NativeBaseProvider style={styles.baseColor} theme={theme}>
@@ -130,23 +313,41 @@ export default function ViewBooksDirective({ navigation }) {
         
 </View>
     
-            <Button type="solid" onPress={getReviews} style={styles.button}>
+            <Button type="solid"  buttonStyle={styles.buttonStyle}onPress={getReviews} style={styles.button}>
               Mostrar Resultados
             </Button>
        
   
-          <View style={styles.tableContainer}>
-            <Table borderStyle={styles.tableBorderStyle}>
-              {tableData.map((rowData, index) => (
-                <Row
-                  key={index}
-                  data={rowData}
-                  textStyle={styles.rowTextStyle}
-                  style={index === 0 ? styles.headerRowStyle : styles.dataRowStyle}
-                />
-              ))}
-            </Table>
+            <View style={styles.tableContainer}>
+            {!editar ? <ReviewTable /> : <NativeBaseProvider>
+              <View style={styles.tableColor}>
+                <Table borderStyle={{ borderWidth: 1, borderColor: '#ffa1d2' }}>
+                  <Row  data={state.HeadTable} />
+                  <Rows data={state.DataTable} />
+                </Table>
+              </View>
+            </NativeBaseProvider>}
+
           </View>
+          {(verEditar) && (unitySelected !== '') && (subjectSelected !== '')  && (
+            <Button type="solid" onPress={() => handleChangeEdit()}
+              buttonStyle={styles.buttonStyle}
+              buttonTextStyle={styles.buttonTextStyle}
+            >
+              Editar
+            </Button>
+          )}
+          {(editar) && (!cambiosApli) && (
+            <Button type="solid" onPress={() => handleFinalizarRevision()}
+              buttonStyle={styles.buttonStyle}>
+              Aplicar Cambios
+            </Button>
+          )}
+          {(editar) && (cambiosApli) && (<Button type="solid" onPress={() => sendReview()}
+            buttonStyle={styles.buttonStyle}>
+            Guardar Cambios
+          </Button>
+          )}
         </View>
       </ScrollView>
     </NativeBaseProvider>
@@ -169,7 +370,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#b8f7d4'
 
   },
-
+  buttonStyle: {
+ marginLeft:105,
+    width: 200,
+    height: 60,
+    borderRadius: 10,
+    backgroundColor: '#007932'
+},
   drop:{
     marginLeft:100
   },
@@ -229,10 +436,22 @@ const styles = StyleSheet.create({
 
   },
   rowTextStyle: {
-    textAlign: 'center',
-    fontWeight:"bold"
+    textAlign: 'center'
+    ,fontFamily:'NotoSansHK-Medium-Alphabetic'
   },
   button: {
     marginTop: 20,
+  },
+  buttonStyle: {
+    marginTop: 10,
+    marginBottom: 20,
+    width: 200,
+    height: 50,
+    borderRadius: 10,
+    backgroundColor: '#007932',
+    alignSelf: 'center',
+  },
+  buttonTextStyle: {
+    textAlign: 'center',
   },
 });

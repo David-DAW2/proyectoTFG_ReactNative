@@ -9,12 +9,14 @@ export default function Home({ navigation }) {
   React.useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
   }, [navigation]);
+  const [showOptions, setShowOptions] = useState(false);
 
   const [modalVisible, setModalVisible] = useState(false);
   const [rol, setRol] = useState('');
   const [rolLoaded, setRolLoaded] = useState(false);
   const [name, setName] = useState('');
 
+ 
   const loadData = async () => {
     try {
       const value = await AsyncStorage.getItem('rol');
@@ -26,6 +28,13 @@ export default function Home({ navigation }) {
       console.log('Error al obtener datos de AsyncStorage:', error);
     }
   };
+  useEffect(() => {
+    loadData();
+    return () => {
+      // Cleanup effect
+      setModalVisible(false);
+    };
+  }, [rol]);
 
   useEffect(() => {
     loadData();
@@ -66,7 +75,7 @@ export default function Home({ navigation }) {
         />
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.icon} onPress={() => setModalVisible(!modalVisible)} activeOpacity={0.3}>
+      <TouchableOpacity style={styles.icon} onPress={() => setShowOptions(!showOptions)} activeOpacity={0.3}>
         <AntDesign name='user' size={35} color='#000' />
       </TouchableOpacity>
 
@@ -96,8 +105,23 @@ export default function Home({ navigation }) {
           }}
           onPress={() => navigation.navigate('ManagedUsers')}
         />
+
+     
       )}
 
+{( rol === 'DIRECTIVO') && (
+<Button
+        title="Alta usuarios"
+        buttonStyle={styles.button}
+        ViewComponent={LinearGradient}
+        linearGradientProps={{
+          colors: ['#368f3f', '#368f3f'],
+          start: { x: 0, y: 0 },
+          end: { x: 1, y: 0 },
+        }}
+        onPress={() => navigation.navigate('HomeCreate')}
+      />
+     )}
       {(rol === 'COORDINADOR TIC' || rol === 'DIRECTIVO') && (
         <Button
           title="Revisar incidencias"
@@ -124,17 +148,16 @@ export default function Home({ navigation }) {
         onPress={() =>selecRolReview()}
       />
 
-      <Modal visible={modalVisible} transparent={true} animationType='slide'>
-        <View style={styles.modal}>
-          <TouchableOpacity activeOpacity={0.3} onPress={() => setModalVisible(!modalVisible)} style={styles.icon}>
-            <AntDesign name='close' size={35} color='#000' />
+{showOptions && (
+        <View style={styles.optionsContainer}>
+          <TouchableOpacity style={styles.optionButton} onPress={() => { setShowOptions(false); navigation.navigate('ResetPass') }}>
+            <Text style={styles.optionText}>Mi perfil</Text>
           </TouchableOpacity>
-          <View style={styles.containerModal}>
-            <Button buttonStyle={styles.buttonModal} title="Cambiar contraseña" onPress={() => { navigation.navigate('ResetPass') }} />
-            <Button buttonStyle={styles.buttonModalSesion} title="Cerrar sesión" onPress={() => { handleLogout(), navigation.navigate('Login') }} />
-          </View>
+          <TouchableOpacity style={styles.optionButton}  onPress={() => { handleLogout(), navigation.navigate('Login') }}>
+            <Text style={styles.optionText}>Cerrar sesión</Text>
+          </TouchableOpacity>
         </View>
-      </Modal>
+      )}
     </View>
   );
 }
@@ -161,8 +184,9 @@ const styles = StyleSheet.create({
   },
   button: {
     width: 150,
-    height: 150,
+    height: 120,
     margin: 10,
+    marginBottom:10,
     borderRadius: 10,
   },
   buttonModal: {
@@ -191,6 +215,23 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     marginLeft: '10%',
     marginTop: '40%',
-    zIndex: 0
+    zIndex: 1
+  },
+  optionsContainer: {
+    position: 'absolute',
+    top: 60,
+    right: 10,
+    width: 150,
+    backgroundColor: '#fff',
+    borderRadius: 5,
+    elevation: 4,
+    zIndex: 1,
+  },
+  optionButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+  },
+  optionText: {
+    fontSize: 16,
   },
 });

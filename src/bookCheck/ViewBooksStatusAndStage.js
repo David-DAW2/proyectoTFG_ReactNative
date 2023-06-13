@@ -47,7 +47,7 @@ export default function ViewBooksStatusAndStage({ navigation }) {
     };
 
     axios
-      .get('http://localhost:8000/api/allUsersReviews', {
+      .get('https://tfg-fmr.alwaysdata.net/back/public/api/allUsersReviews', {
         headers,
         params: {
           status: estado,
@@ -121,7 +121,7 @@ export default function ViewBooksStatusAndStage({ navigation }) {
           />
         </View>
         <Text></Text>
-        {(datosCargados) && (<Button type="solid" style={styles.button} onPress={() => getReviewsStatus()} >
+        {(datosCargados) && (<Button type="solid" buttonStyle={styles.buttonStyle} onPress={() => getReviewsStatus()} >
           Mostrar Resultados
         </Button>)}
         {(selectedEtapa && reviewData && reviewData.data && reviewData.data.length > 0) ? (
@@ -187,6 +187,13 @@ const styles = StyleSheet.create({
     marginBottom: 30
 
   },
+  buttonStyle: {
+    marginLeft:105,
+       width: 200,
+       height: 60,
+       borderRadius: 10,
+       backgroundColor: '#007932'
+   },
   dropdown2BtnStyle: {
     width: '100%',
     height: 50,
@@ -234,6 +241,7 @@ const styles = StyleSheet.create({
   rowTextStyle: {
     textAlign: 'center',
     fontWeight: "bold"
+    ,fontFamily:'NotoSansHK-Medium-Alphabetic'
   },
   button: {
     marginTop: 20,

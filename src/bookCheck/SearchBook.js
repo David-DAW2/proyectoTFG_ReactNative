@@ -43,7 +43,7 @@ export default function SearchBook({ navigation }) {
   };
   const handleFinalizarRevision = () => {
     const newData = state.DataTable.reduce((acc, rowData, index) => {
-      const estado = selectedOptions[index];
+      const estado = selectedOptions[index]==null? "NO REVISADO":selectedOptions[index];
       const observaciones = observations[index];
       const id = students && students.data && students.data[index] ? students.data[index].id : null;
   
@@ -109,7 +109,7 @@ export default function SearchBook({ navigation }) {
     const params = {
       reviews: reviewForSend
     }
-    axios.post('http://localhost:8000/api/review', params, { headers })
+    axios.post('https://tfg-fmr.alwaysdata.net/back/public/api/review', params, { headers })
       .then(response => {
         if (response.data) {
           if (response.data.success) {
@@ -149,7 +149,7 @@ export default function SearchBook({ navigation }) {
       const headers = {
         Authorization: `Bearer ${token}`,
       };
-      axios.get(`http://localhost:8000/api/taughts/${userId}`, { headers })
+      axios.get(`https://tfg-fmr.alwaysdata.net/back/public/api/taughts/${userId}`, { headers })
         .then(response => {
           setOptions(response.data)
         }
@@ -172,7 +172,7 @@ export default function SearchBook({ navigation }) {
       Authorization: `Bearer ${token}`,
     };
     console.log(unitySelected)
-    axios.get(`http://localhost:8000/api/${unitySelected}`, { headers })
+    axios.get(`https://tfg-fmr.alwaysdata.net/back/public/api/${unitySelected}`, { headers })
       .then(response => {
         setStudents(response.data)
       }
@@ -187,7 +187,7 @@ export default function SearchBook({ navigation }) {
   const dataTable = students && students.data
   ? students.data.map((item, index) => {
       return [
-        `${item.id} - ${item.surnames} `,
+        `${item.id} - ${item.name} ${item.surnames}  `,
         <SelectDropdown
           data={estados}
           onSelect={(selectedItem) => {
@@ -209,6 +209,7 @@ export default function SearchBook({ navigation }) {
           defaultValue={selectedOptions[index] || null}
         />,
         <TextArea
+        fontSize={15}
           style={styles.textAreaStyle} // Agrega esta línea para definir el estilo del TextArea
           onChangeText={(textValue) => {
             setObservations((prevOptions) => {
@@ -234,7 +235,7 @@ export default function SearchBook({ navigation }) {
             data={options.data}
             onSelect={handleSelect}
             buttonTextAfterSelection={(selectedItem, index) => {
-              return selectedItem.unity_name;
+              return selectedItem.unity_name +" - "+ selectedItem.subject_name;
             }}
             rowTextForSelection={(item, index) => {
               return item.unity_name + '/' + item.subject_name;
@@ -273,7 +274,7 @@ export default function SearchBook({ navigation }) {
           />
         </View>
         <Text></Text>
-        {(unitySelected != '') && (subjectSelected != '') && ((!revFinalizada)) && (selectedEtapa) && (<Button type="solid" style={styles.button} onPress={() => getStudents()} >
+        {(unitySelected != '') && (subjectSelected != '') && ((!revFinalizada)) && (selectedEtapa) && (<Button type="solid"  buttonStyle={styles.buttonStyle} onPress={() => getStudents()} >
           Mostrar Resultados
         </Button>)}
   
@@ -288,14 +289,14 @@ export default function SearchBook({ navigation }) {
         </NativeBaseProvider>)}
         <Text></Text>
         {(unitySelected != '') && (subjectSelected != '') && ((!revFinalizada)) && (selectedEtapa) && (
-          <Button type="solid" style={styles.button} onPress={handleFinalizarRevision}>
+          <Button type="solid" buttonStyle={styles.buttonStyle} onPress={handleFinalizarRevision}>
             Finalizar Revisión
           </Button>
         )}
   
   
         {(revFinalizada) && (
-          <Button type="solid" color="secondary" style={styles.button} onPress={sendReview}>
+          <Button type="solid" color="secondary"  buttonStyle={styles.buttonStyle} onPress={sendReview}>
             Enviar
           </Button>
         )}
@@ -317,7 +318,8 @@ const theme = extendTheme({
   colors: '#b8f7d4'
 });
 const styles = StyleSheet.create({
-  baseColor:{backgroundColor:'#b8f7d4'},
+  baseColor:{backgroundColor:'#b8f7d4',
+},
   tableColor:{backgroundColor:'#FFF'},
 
   dropdown2BtnStyle: {
@@ -325,7 +327,8 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: '#FFF',
     borderRadius: 8,
-    borderColor: '#000'
+    borderColor: '#000',
+    alignSelf: 'center', // Add this line to center the button horizontally
   },
   dropdown2BtnTxtStyle: {
     color: '#000',
@@ -343,11 +346,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
   },
+  buttonStyle: {
+    marginTop: 10,
+    marginBottom: 20,
+    width: 200,
+    height: 50,
+    borderRadius: 10,
+    backgroundColor: '#007932',
+    alignSelf: 'center',
+  },
   container: {
     backgroundColor: '#b8f7d4',
 
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
     marginTop: 40
   },
@@ -362,6 +372,7 @@ const styles = StyleSheet.create({
 
 
   },
+
   textAreaStyle: {
     borderWidth: 1,
     borderColor: '#000',

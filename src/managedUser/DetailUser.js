@@ -23,7 +23,7 @@ export default function DetailUser({ route }) {
   const [resetPassDni, setResetPassDni] = useState(false);
 
   const [editState, setEditState] = useState(false)
-  const navigateToMyReports = () => {
+  const navigateHome = () => {
     navigation.navigate('Home')
   }
   useLayoutEffect(() => {
@@ -64,7 +64,7 @@ export default function DetailUser({ route }) {
               authorization: `Bearer ${token}`,
             };
             axios
-              .delete(`http://localhost:8000/api/user/${idUser}`, { headers })
+              .delete(`https://tfg-fmr.alwaysdata.net/back/public/api/user/${idUser}`, { headers })
               .then(response => {
                 Alert.alert('Usuario borrado con éxito');
               })
@@ -102,9 +102,10 @@ export default function DetailUser({ route }) {
               authorization: `Bearer ${token}`,
             };
             axios
-              .put(`http://localhost:8000/api/user/${idUser}`, params, { headers })
+              .put(`https://tfg-fmr.alwaysdata.net/back/public/api/user/${idUser}`, params, { headers })
               .then(response => {
                 Alert.alert('Usuario modificado con éxito');
+                navigateHome()
               })
               .catch(error => {
                 console.log('Error al obtener los usuarios:', error);
@@ -137,14 +138,18 @@ export default function DetailUser({ route }) {
           style={styles.check}
         />
         <CheckBox
-          title="Convertir coordenadas"
+          title="Convertir a coordinador"
           checked={convertCoor}
           onPress={() => setConvertCoor(!convertCoor)}
+          style={{    fontFamily: 'NotoSansHK-Medium',
+        }}
         />
         <CheckBox
-          title="Convertir dirección"
+          title="Convertir a directivo"
           checked={convertDirect}
           onPress={() => setConvertDirect(!convertDirect)}
+          style={{    fontFamily: 'NotoSansHK-Medium',
+        }}
         />
       </View>
 
@@ -203,7 +208,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     justifyContent: 'flex-start',
   },
-  check:{    backgroundColor: '#85FEE6',
+  check:{    backgroundColor: '#85FEE6',     fontFamily: 'NotoSansHK-Medium',
+
 },
   TextIn: {
     marginTop: 10,
@@ -217,6 +223,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     fontSize: 18,
+    fontFamily: 'NotoSansHK-Medium',
+
   },
   text: {
     fontSize: 18,

@@ -49,7 +49,7 @@ export default function DetailReviewReport({ route }) {
         const headers = {
           Authorization: `Bearer ${token}`,
         };
-    axios.put(`http://localhost:8000/api/incidences/${incidencia.id}`, params, { headers })
+    axios.put(`https://tfg-fmr.alwaysdata.net/back/public/api/incidences/${incidencia.id}`, params, { headers })
       .then(response => {
         console.log(response.data);
         if(response.data.success){
@@ -80,7 +80,7 @@ export default function DetailReviewReport({ route }) {
         const headers = {
           Authorization: `Bearer ${token}`,
         };
-    axios.put(`http://localhost:8000/api/incidences/${incidencia.id}`, params, { headers })
+    axios.put(`https://tfg-fmr.alwaysdata.net/back/public/api/incidences/${incidencia.id}`, params, { headers })
       .then(response => {
         console.log(response.data);
         if(response.data.success){
@@ -109,7 +109,7 @@ export default function DetailReviewReport({ route }) {
         const headers = {
           Authorization: `Bearer ${token}`,
         };
-    axios.put(`http://localhost:8000/api/incidences/${incidencia.id}`, params, { headers })
+    axios.put(`https://tfg-fmr.alwaysdata.net/back/public/api/incidences/${incidencia.id}`, params, { headers })
       .then(response => {
         console.log(response.data);
         if(response.data.success){
@@ -160,6 +160,7 @@ backgroundColor: '#85FEE6',
 alignItems:'center'
   },
   text: {
+    fontFamily:'NotoSansHK-Medium-Alphabetic',
     width:'90%',
     backgroundColor:'white',
     fontSize: 18,
@@ -171,6 +172,7 @@ alignItems:'center'
     borderRadius:10
   },
   textInput: {
+    fontFamily:'NotoSansHK-Medium-Alphabetic',
     fontSize: 18,
     borderWidth: 1,
     borderColor: 'black',

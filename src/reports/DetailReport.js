@@ -7,6 +7,9 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
 export default function DetailReport({ route }) {
+  React.useLayoutEffect(() => {
+    navigation.setOptions({ headerShown: false });
+  }, [navigation]);
   const { incidencia } = route.params;
   const navigation = useNavigation();
   const navegateToMyReports=()=>{
@@ -34,7 +37,7 @@ const deleteIncidence = async () => {
         text: 'Aceptar',
         onPress: () => {
           axios
-            .delete(`http://localhost:8000/api/incidences/${incidencia.id.toString()}`, { headers })
+            .delete(`https://tfg-fmr.alwaysdata.net/back/public/api/incidences/${incidencia.id.toString()}`, { headers })
             .then((response) => {
               if (response.data) {
                 if (response.data.success) {
@@ -74,7 +77,7 @@ const deleteIncidence = async () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#85FEE6',
+    backgroundColor: '#b8f7d4',
     width: '100%',
     height: '100%',
     paddingTop: 50
@@ -82,6 +85,7 @@ const styles = StyleSheet.create({
 
   },
   text: {
+    fontFamily:'NotoSansHK-Medium-Alphabetic',
     width:'90%',
     backgroundColor:'white',
     fontSize: 18,

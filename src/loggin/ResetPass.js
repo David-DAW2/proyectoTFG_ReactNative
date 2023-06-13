@@ -36,7 +36,7 @@ export default function ResetPass({ navigation }) {
                 user_id: userid,
                 password:passChange
               };
-            axios.put("http://localhost:8000/api/change-password", data, {headers}).then(response =>{
+            axios.put("https://tfg-fmr.alwaysdata.net/back/public/api/change-password", data, {headers}).then(response =>{
 
               console.log()
                 if (response.data.success) {
@@ -53,10 +53,10 @@ export default function ResetPass({ navigation }) {
 
     return (
         <View style={styles.container}>
-                <TextInput style={styles.input} value={pasSession} onChangeText={setPassSession} placeholder='introduce tu contraseña...' ></TextInput>
+                <TextInput style={styles.input} secureTextEntry={true} value={pasSession} onChangeText={setPassSession} placeholder='introduce tu contraseña...' ></TextInput>
                 <TextInput></TextInput>
-            <TextInput style={styles.input} value={passChange} onChangeText={setPassChange} placeholder='introduce la nueva contraseña...' ></TextInput>
-            <TextInput style={styles.input} value={confirmPassChange} onChangeText={setconfirmPassChange} placeholder='repite la nueva contraseña...' ></TextInput>
+            <TextInput style={styles.input} secureTextEntry={true} value={passChange} onChangeText={setPassChange} placeholder='introduce la nueva contraseña...' ></TextInput>
+            <TextInput style={styles.input} secureTextEntry={true} value={confirmPassChange} onChangeText={setconfirmPassChange} placeholder='repite la nueva contraseña...' ></TextInput>
             <Button buttonStyle={styles.buttonModal} title="Cambiar contraseña" onPress={() => { modPassWord(),navigation.navigate('Home') }} />
             <Button buttonStyle={styles.buttonModalSesion} title="Cancelar" onPress={() => { navigation.navigate('Home') }} />
         </View>

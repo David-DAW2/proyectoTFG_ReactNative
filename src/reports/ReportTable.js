@@ -25,11 +25,11 @@ const ReportTable = ({ data }) => {
                         data.map((incidencia, index) => (
                             <TouchableHighlight  onPress={() => {  navigateToDetailReport({incidencia: incidencia}) }}>
                             <DataTable.Row key={index} style={styles.Row}>
-                                <DataTable.Cell  textStyle={{fontFamily:'Feather',marginLeft:10}}>
+                                <DataTable.Cell  textStyle={{fontFamily:'NotoSansHK-Medium-Alphabetic',marginLeft:10}}>
                                     {incidencia.date}
                                 </DataTable.Cell>
-                                <DataTable.Cell  textStyle={{fontFamily:'Feather',marginLeft:10}}>{incidencia.description}</DataTable.Cell>
-                                <DataTable.Cell  textStyle={{fontFamily:'Feather',marginLeft:10}}>{incidencia.status}</DataTable.Cell>
+                                <DataTable.Cell  textStyle={{fontFamily:'NotoSansHK-Medium-Alphabetic',marginLeft:10}}>{incidencia.description}</DataTable.Cell>
+                                <DataTable.Cell  textStyle={{fontFamily:'NotoSansHK-Medium-Alphabetic',marginLeft:10}}>{incidencia.status}</DataTable.Cell>
                             </DataTable.Row>
                             </TouchableHighlight>
                         ))
