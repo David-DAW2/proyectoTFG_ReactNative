@@ -61,50 +61,66 @@ export default function CreateStudent({ navigation }) {
   }, [token]);
 
   const createStudent = () => {
-    Alert.alert(
-      'Confirmación',
-      '¿Estás seguro de que quieres guardar los cambios?',
-      [
-        {
-          text: 'Cancelar',
-          style: 'cancel',
-        },
-        {
-          text: 'Guardar',
-          onPress: () => {
-            const params = {
-              name: nameStudent,
-              surnames: surnameStudent,
-              NIF: nifStudent,
-              email: emailStudent,
-              parent_email: emailParentStudent,
-              unity: selectedUnity,
-            };
+    if(nifStudent===''||nameStudent===''||emailStudent===''){
+      Alert.alert("Faltan campos por completar")
+    return;
+    }else{
+      if (selectedUnity==='') {
+        Alert.alert("No ha seleccionado ningun curso")
 
-            console.log(params)
-            const headers = {
-              authorization: `Bearer ${token}`,
-            };
-
-            axios
-              .post('https://tfg-fmr.alwaysdata.net/back/public/api/create/student', params, { headers })
-              .then(response => {
-                Alert.alert('Alumno creado con éxito');
-                console.log(response.data)
-                navigateHome()
-              })
-              .catch(error => {
-                console.log('Error al crear alumno:', error.message);
-              });
-          },
-        },
-      ]
-    );
+      }else{
+        Alert.alert(
+          'Confirmación',
+          '¿Estás seguro de que quieres guardar los cambios?',
+          [
+            {
+              text: 'Cancelar',
+              style: 'cancel',
+            },
+            {
+              text: 'Guardar',
+              onPress: () => {
+                const params = {
+                  name: nameStudent,
+                  surnames: surnameStudent,
+                  NIF: nifStudent,
+                  email: emailStudent,
+                  parent_email: emailParentStudent,
+                  unity: selectedUnity,
+                };
+    
+                console.log(params)
+                const headers = {
+                  authorization: `Bearer ${token}`,
+                };
+    
+                axios
+                  .post('https://tfg-fmr.alwaysdata.net/back/public/api/create/student', params, { headers })
+                  .then(response => {
+                    Alert.alert('Alumno creado con éxito');
+                    console.log(response.data)
+                    navigateHome()
+                  })
+                  .catch(error => {
+                    console.log('Error al crear alumno:');
+                  });
+              },
+            },
+          ]
+        );
+      }
+    
+    }
   };
 
   return (
+    
     <NativeBaseProvider style={styles.baseColor} theme={theme}>
+     
       <ScrollView style={styles.baseColor}>
+      <View style={styles.headerNav}>
+        <Text style={styles.headerText}>Crear alumnos </Text>
+      </View>
         <Text style={styles.textGenerated}>Nombre alumno:</Text>
         <TextInput style={styles.TextIn} value={nameStudent} onChangeText={setNameStudent} />
 
@@ -139,7 +155,7 @@ export default function CreateStudent({ navigation }) {
                 dropdownStyle={styles.dropdown2DropdownStyle}
                 rowStyle={styles.dropdown2RowStyle}
                 rowTextStyle={styles.dropdown2RowTxtStyle}
-                defaultButtonText="Elija una opción"
+                defaultButtonText="Elija un curso"
               />
               {(unitiesCargados) && (<SelectDropdown
                 data={subjects.data}
@@ -158,7 +174,7 @@ export default function CreateStudent({ navigation }) {
                 dropdownStyle={styles.dropdown2DropdownStyle}
                 rowStyle={styles.dropdown2RowStyle}
                 rowTextStyle={styles.dropdown2RowTxtStyle}
-                defaultButtonText="Elija una opción"
+                defaultButtonText="Elija un curso"
               />)}
             </>
           )}
@@ -173,7 +189,7 @@ export default function CreateStudent({ navigation }) {
 }
 
 const theme = extendTheme({
-  colors: '#b8f7d4'
+  colors: 'white'
 });
 
 const styles = StyleSheet.create({
@@ -182,11 +198,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 20,
   },
+  headerNav: {
+    width: '100%',
+    paddingVertical: 10,
+    alignItems: 'center',
+    marginTop:0
+    ,    backgroundColor: '#007932',
+  
+    
+  },
+  headerText: {
+    paddingTop:10,
+  
+    fontSize: 24,
+    color: '#FFF',
+    fontFamily:'NotoSansHK-Medium-Alphabetic'
+  },
   textGenerated: {
     fontFamily: 'NotoSansHK-Medium',
     marginBottom: 5,
     marginTop: 5,
-    marginLeft:20
+    marginLeft:45
   },
   container2: {
     flexDirection: 'row',
@@ -196,9 +228,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   baseColor: {
-    backgroundColor: '#b8f7d4',
+    backgroundColor: 'white',
   },
   TextIn: {
+    width:'80%'
+    ,
     marginTop: 10,
     height: 60,
     margin: 3,
@@ -209,6 +243,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     fontSize: 18,
+    alignSelf:'center'
   },
   buttonStyle: {
     marginTop: 10,
@@ -227,6 +262,7 @@ const styles = StyleSheet.create({
     borderBottomEndRadius: 5,
     borderColor: '#000',
     marginTop: 10,
+    borderWidth:1
   },
   dropdown2BtnTxtStyle: {
     color: '#000',

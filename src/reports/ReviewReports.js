@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import incidencias from "../incidencias";
-import { View, ScrollView, TouchableOpacity, Text, Alert,StyleSheet } from "react-native";
+import { View, ScrollView, TouchableOpacity, Text, Alert, StyleSheet } from "react-native";
+import { useIsFocused } from '@react-navigation/native';
 import ReportReviewTable from "./ReportReviewTable";
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from "axios";
 
 const ReviewReports = ({ navigation }) => {
+    const isFocused = useIsFocused(); 
     React.useLayoutEffect(() => {
         navigation.setOptions({ headerShown: false });
     }, [navigation]);
@@ -18,11 +19,15 @@ const ReviewReports = ({ navigation }) => {
     const itemsPerPage = 10;
 
     const handleNextPage = () => {
-        setPage((prevPage) => prevPage + 1);
+        if ((page + 1) * itemsPerPage < contenidoTabla.length) {
+            setPage((prevPage) => prevPage + 1);
+        }
     };
 
     const handlePrevPage = () => {
-        setPage((prevPage) => prevPage - 1);
+        if (page > 0) {
+            setPage((prevPage) => prevPage - 1);
+        }
     };
 
     const params = {
@@ -32,6 +37,7 @@ const ReviewReports = ({ navigation }) => {
     const headers = {
         Authorization: `Bearer ${token}`,
     };
+
     const getIncidences = async () => {
         console.log(rol)
         if (rol === "COORDINADOR TIC") {
@@ -41,7 +47,6 @@ const ReviewReports = ({ navigation }) => {
                 setContenidoTabla(response.data.data);
             } catch (error) {
                 console.log('Error al obtener las incidencias:', error);
-                // Puedes mostrar una alerta o manejar el error de otra manera aquí
             }
         } else {
             try {
@@ -50,11 +55,10 @@ const ReviewReports = ({ navigation }) => {
                 setContenidoTabla(response.data.data);
             } catch (error) {
                 console.log('Error al obtener las incidencias:', error);
-                // Puedes mostrar una alerta o manejar el error de otra manera aquí
             }
         }
-
     };
+
     useEffect(() => {
         const getData = async () => {
             try {
@@ -65,21 +69,25 @@ const ReviewReports = ({ navigation }) => {
                 setId(idStore);
                 setToken(tokenStore);
                 setRol(rol)
-
             } catch (error) {
                 console.log('Error al obtener datos de AsyncStorage:', error);
             }
-
         };
 
         getData();
-
-    }, [rol]);
+    }, [isFocused]); 
+    
     useEffect(() => {
         if (id && token && rol) {
             getIncidences();
         }
     }, [id, token, rol]);
+
+    useEffect(() => {
+        if (isFocused) { 
+            getIncidences();
+        }
+    }, [isFocused]);
 
     const slicedData = contenidoTabla.slice(
         page * itemsPerPage,
@@ -88,6 +96,13 @@ const ReviewReports = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+                <View style={styles.headerNav}>
+                {rol === 'COORDINADOR TIC' ? (
+  <Text style={styles.headerText}>Incidencias TIC</Text>
+) : (
+  <Text style={styles.headerText}>Incidencias TIC y no TIC</Text>
+)}
+      </View>
             <ReportReviewTable data={slicedData} />
             <View style={{ flexDirection: "row", justifyContent: "center" }}>
                 <TouchableOpacity
@@ -99,7 +114,7 @@ const ReviewReports = ({ navigation }) => {
                 </TouchableOpacity>
                 <TouchableOpacity
                     onPress={handleNextPage}
-                    disabled={(page + 1) * itemsPerPage >= incidencias.length}
+                    disabled={(page + 1) * itemsPerPage >= contenidoTabla.length}
                     style={{ padding: 10 }}
                 >
                     <Text>{`>`}</Text>
@@ -110,8 +125,27 @@ const ReviewReports = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-    container:{    backgroundColor: '#b8f7d4',
-    height:1000
-}
-})
+    container: {
+        backgroundColor: 'white',
+        height: 1000
+    },
+    headerNav: {
+        width: '100%',
+        paddingVertical: 10,
+        alignItems: 'center',
+        marginBottom: 30,
+        marginTop:0
+        ,    backgroundColor: '#007932',
+      
+        
+      },
+      headerText: {
+        paddingTop:10,
+      
+        fontSize: 24,
+        color: '#FFF',
+        fontFamily:'NotoSansHK-Medium-Alphabetic'
+      },
+});
+
 export default ReviewReports;

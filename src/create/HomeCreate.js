@@ -11,14 +11,12 @@ export default function HomeCreate({ navigation }) {
 
   return (
     <View style={styles.container} >
-      <TouchableOpacity style={styles.image} activeOpacity={0.3}>
 
         <Image
           source={require('../images/escudoMachado.jpg')
           } style={styles.image}
 
         />
-      </TouchableOpacity>
       <Button buttonStyle={styles.button}
         ViewComponent={LinearGradient}
         linearGradientProps={{
@@ -50,7 +48,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     resizeMode: 'contain',
-    top: 20
+    top: 40
 
   },
   container: {
@@ -58,7 +56,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#b8f7d4'
+    backgroundColor: 'white'
   },
   button: {
     width: 210,

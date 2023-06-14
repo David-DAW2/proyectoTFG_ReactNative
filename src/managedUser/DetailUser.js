@@ -67,6 +67,7 @@ export default function DetailUser({ route }) {
               .delete(`https://tfg-fmr.alwaysdata.net/back/public/api/user/${idUser}`, { headers })
               .then(response => {
                 Alert.alert('Usuario borrado con éxito');
+                navigateHome()
               })
               .catch(error => {
                 console.log('Error al obtener los usuarios:', error);
@@ -90,13 +91,13 @@ export default function DetailUser({ route }) {
           text: 'Guardar',
           onPress: () => {
             const params = {
-            id:idUser,
-            name:nameUser,
-            email:emailUser,
-            directive:convertDirect,
-            restore:resetPassDni,
-            coordinator:convertCoor
-          
+              id: idUser,
+              name: nameUser,
+              email: emailUser,
+              directive: convertDirect,
+              restore: resetPassDni,
+              coordinator: convertCoor
+
             };
             const headers = {
               authorization: `Bearer ${token}`,
@@ -127,11 +128,16 @@ export default function DetailUser({ route }) {
     console.log(emailUser)
   }
   return (
+
     <View style={styles.container}>
+      <View style={styles.headerNav}>
+        <Text style={styles.headerText}>{nameUser}</Text>
+      </View>
       <TextInput style={styles.TextIn} editable={editState} value={nameUser} onChangeText={setNameUser} />
       <TextInput style={styles.TextIn} editable={editState} value={emailUser} onChangeText={setEmailUser} />
       <View style={styles.containerCheck}>
         <CheckBox
+        
           title="Resetear contraseña por DNI"
           checked={resetPassDni}
           onPress={() => setResetPassDni(!resetPassDni)}
@@ -141,15 +147,17 @@ export default function DetailUser({ route }) {
           title="Convertir a coordinador"
           checked={convertCoor}
           onPress={() => setConvertCoor(!convertCoor)}
-          style={{    fontFamily: 'NotoSansHK-Medium',
-        }}
+          style={{
+            fontFamily: 'NotoSansHK-Medium',
+          }}
         />
         <CheckBox
           title="Convertir a directivo"
           checked={convertDirect}
           onPress={() => setConvertDirect(!convertDirect)}
-          style={{    fontFamily: 'NotoSansHK-Medium',
-        }}
+          style={{
+            fontFamily: 'NotoSansHK-Medium',
+          }}
         />
       </View>
 
@@ -177,13 +185,13 @@ export default function DetailUser({ route }) {
           </View>
         </TouchableHighlight>
 
-    
+
       </View>
       <View>
-            <Button type="solid" title={"Guardar cambios"} buttonStyle={styles.buttonStyle} onPress={() => updateUser()}>
-              
-            </Button>
-          </View>
+        <Button type="solid" title={"Guardar cambios"} buttonStyle={styles.buttonStyle} onPress={() => updateUser()}>
+
+        </Button>
+      </View>
     </View>
   );
 }
@@ -191,7 +199,7 @@ export default function DetailUser({ route }) {
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
-    backgroundColor: '#b8f7d4',
+    backgroundColor: 'white',
     width: '100%',
     height: '100%',
     flex: 1,
@@ -208,9 +216,10 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     justifyContent: 'flex-start',
   },
-  check:{    backgroundColor: '#85FEE6',     fontFamily: 'NotoSansHK-Medium',
+  check: {
+    backgroundColor: 'white', fontFamily: 'NotoSansHK-Medium',
 
-},
+  },
   TextIn: {
     marginTop: 10,
     width: '90%',
@@ -226,6 +235,26 @@ const styles = StyleSheet.create({
     fontFamily: 'NotoSansHK-Medium',
 
   },
+
+  headerNav: {
+    position: 'absolute',
+    top: 0,
+    width: '100%',
+    paddingVertical: 10,
+    alignItems: 'center',
+    marginTop: 0
+    , backgroundColor: '#007932',
+
+
+  },
+  headerText: {
+    paddingTop: 10,
+
+    fontSize: 24,
+    color: '#FFF',
+    fontFamily: 'NotoSansHK-Medium-Alphabetic'
+  },
+
   text: {
     fontSize: 18,
     textAlign: 'center',
@@ -234,15 +263,15 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 5,
   },
-  buttonStyle:{
-    marginTop:10,
-    marginBottom:20,
-   
-    width:140,
-    height:60,
-    borderRadius:10,
+  buttonStyle: {
+    marginTop: 10,
+    marginBottom: 20,
+
+    width: 140,
+    height: 60,
+    borderRadius: 10,
     backgroundColor: '#007932'
- },
+  },
   buttonMargin: {
     marginLeft: 20
   }

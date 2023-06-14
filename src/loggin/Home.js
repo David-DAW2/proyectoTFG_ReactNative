@@ -31,7 +31,6 @@ export default function Home({ navigation }) {
   useEffect(() => {
     loadData();
     return () => {
-      // Cleanup effect
       setModalVisible(false);
     };
   }, [rol]);
@@ -50,9 +49,8 @@ export default function Home({ navigation }) {
   const handleLogout = async () => {
     try {
       await AsyncStorage.clear();
-      // Realizar cualquier otra lógica necesaria después de eliminar los datos
-      // Redirigir al usuario a la pantalla de inicio de sesión, por ejemplo
-      loadData(); // Cargar los datos actualizados después de hacer logout
+   
+      loadData(); 
     } catch (error) {
       console.log('Error al eliminar datos de AsyncStorage:', error);
     }
@@ -68,12 +66,11 @@ export default function Home({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.image} activeOpacity={0.3}>
-        <Image
+        <Image 
           source={require('../images/escudoMachado.jpg')}
           style={styles.image}
         />
-      </TouchableOpacity>
+      
 
       <TouchableOpacity style={styles.icon} onPress={() => setShowOptions(!showOptions)} activeOpacity={0.3}>
         <AntDesign name='user' size={35} color='#000' />
@@ -135,7 +132,7 @@ export default function Home({ navigation }) {
           onPress={() => navigation.navigate('ReviewReports')}
         />
       )}
-
+ {(rol !== 'COORDINADOR TIC') &&(
       <Button
         title="Revisiones libros"
         buttonStyle={styles.button}
@@ -147,11 +144,11 @@ export default function Home({ navigation }) {
         }}
         onPress={() =>selecRolReview()}
       />
-
+      )}
 {showOptions && (
         <View style={styles.optionsContainer}>
           <TouchableOpacity style={styles.optionButton} onPress={() => { setShowOptions(false); navigation.navigate('ResetPass') }}>
-            <Text style={styles.optionText}>Mi perfil</Text>
+            <Text style={styles.optionText}>Cambiar contraseña</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.optionButton}  onPress={() => { handleLogout(), navigation.navigate('Login') }}>
             <Text style={styles.optionText}>Cerrar sesión</Text>
@@ -175,7 +172,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#b8f7d4',
+    backgroundColor: 'white',
   },
   containerModal: {
     flex: 1,
@@ -233,5 +230,6 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontSize: 16,
+    fontFamily:'NotoSansHK-Regular-Alphabetic'
   },
 });

@@ -25,7 +25,7 @@ export function NewReport({ navigation }) {
 
     const [id, setID] = useState('')
     const [expanded, setExpanded] = useState(true);
-    const [selectedOption, setSelectedOption] = useState('Tic');
+    const [selectedOption, setSelectedOption] = useState('');
     const [text, onChangeText] = React.useState('');
     const [objValues, setObjValues] = useState({
         selectedOption: 'Tic',
@@ -51,77 +51,90 @@ export function NewReport({ navigation }) {
 
 
     const enviarDatos = async (id, descripcion, tipo) => {
-        try {
-            // Obtener el token de AsyncStorage
-            const token = await AsyncStorage.getItem('token');
+        if (objValues.selectedOption === '') {
+            Alert.alert("No se ha elegido tipo de incidencia")
+        } else {
+            if (objValues.text === '') {
+                Alert.alert("No se ha añadido ningun comentario")
 
-            // Configurar los encabezados de la solicitud
-            const headers = {
-                Authorization: `Bearer ${token}`,
-            };
-            console.log(id)
-            console.log(descripcion)
-            console.log(tipo)
+            } else {
 
-            // Configurar el cuerpo de la solicitud
-            const data = {
-                user_id: id,
-                description: descripcion,
-                type: tipo
-            };
+                try {
+                    const token = await AsyncStorage.getItem('token');
 
-            // Realizar la llamada POST al endpoint
-            const response = await axios.post('https://tfg-fmr.alwaysdata.net/back/public/api/incidences', data, { headers }).then(response => {
-                if (response.data.success) {
-                    Alert.alert('Incidencia creada con éxito')
-                    navegateToMyReports()
+                    const headers = {
+                        Authorization: `Bearer ${token}`,
+                    };
+                    console.log(id)
+                    console.log(descripcion)
+                    console.log(tipo)
 
+                    const data = {
+                        user_id: id,
+                        description: descripcion,
+                        type: tipo
+                    };
+
+                    const response = await axios.post('https://tfg-fmr.alwaysdata.net/back/public/api/incidences', data, { headers }).then(response => {
+                        if (response.data.success) {
+                            Alert.alert('Incidencia creada con éxito')
+                            navegateToMyReports()
+
+                        }
+                    })
+
+                    console.log('Respuesta del servidor:', response.data);
+
+                } catch (error) {
+                    console.log('Error al enviar los datos:', error);
                 }
-            })
-
-            // Manejar la respuesta del servidor
-            console.log('Respuesta del servidor:', response.data);
-
-            // Realizar cualquier acción adicional según sea necesario
-        } catch (error) {
-            console.log('Error al enviar los datos:', error);
-            // Manejar el error de acuerdo a tus necesidades
+            }
         }
+
     };
     const handleSave = () => {
         setObjValues({ selectedOption, text })
     }
+    useEffect(() => {
+        handleSave()
+    }, [selectedOption, text])
 
     return (
-        <NativeBaseProvider>
+        <NativeBaseProvider >
+
             <View style={styles.container}>
                 <View style={styles.header}>
                     <Text style={styles.headerText}>Crear incidencia</Text>
                 </View>
-                <View style={styles.radioGroup}>
-                    <RadioButton.Group onValueChange={newValue => setSelectedOption(newValue)} value={selectedOption}>
-                        <View style={styles.radioOption}>
-                            <RadioButton style={{ fontFamily: 'NotoSansHK-Medium', }} value="TIC" />
-                            <Text style={styles.radioOptionText}>Indicencia TIC</Text>
-                        </View>
-                        <View style={styles.radioOption}>
-                            <RadioButton style={{ fontFamily: 'NotoSansHK-Medium', }} value="NO TIC" />
-                            <Text style={styles.radioOptionText}>Indicencia no TIC</Text>
-                        </View>
-                    </RadioButton.Group>
+                <View style={{ backgroundColor: 'white', height: '70%',shadowRadius:30 }}>
+                    <View style={styles.radioGroup}>
+                        <RadioButton.Group onValueChange={newValue => setSelectedOption(newValue)} value={selectedOption}>
+                            <View style={styles.radioOption}>
+                                <RadioButton style={{ fontFamily: 'NotoSansHK-Medium', marginLeft: 10 }} value="TIC" />
+                                <Text style={styles.radioOptionText}>Indicencia TIC</Text>
+                            </View>
+                            <View style={styles.radioOption}>
+                                <RadioButton style={{ fontFamily: 'NotoSansHK-Medium', }} value="NO TIC" />
+                                <Text style={styles.radioOptionText}>Indicencia no TIC</Text>
+                            </View>
+                        </RadioButton.Group>
+                    </View>
+                    <TextArea
+                        fontSize={17}
+                        fontFamily={'NotoSansHK-Medium-Alphabetic'}
+                        style={{ backgroundColor: 'white' }}
+                        alignSelf={'center'}
+                        marginTop={10}
+                        width={'80%'}
+                        onChangeText={onChangeText}
+                        value={text}
+                        placeholder='Introduzca la incidencia..'
+                    />
+                    <Text></Text>
+                    <Button type="solid" buttonStyle={styles.button} onPress={() => { handleSave(); enviarDatos(id, text, selectedOption) }}>
+                        Guardar
+                    </Button>
                 </View>
-                <TextArea
-                 fontSize={17}
-                 fontFamily={'NotoSansHK-Medium-Alphabetic'}
-                    style={{ backgroundColor: 'white' }}
-                    onChangeText={onChangeText}
-                    value={text}
-                    placeholder='Introduzca la incidencia..'
-                />
-                <Text></Text>
-                <Button type="solid" buttonStyle={styles.button} onPress={() => { handleSave(); enviarDatos(id, text, selectedOption) }}>
-                    Guardar
-                </Button>
             </View>
         </NativeBaseProvider>
     );
@@ -155,13 +168,15 @@ const styles = StyleSheet.create({
     radioOption: {
         flexDirection: 'row',
         alignItems: 'center',
+        marginLeft: 30
 
     },
     radioOptionText: {
-        marginLeft: 5,
+        marginLeft: 30,
         fontSize: 16,
         fontFamily: 'Feather',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+
     },
     input: {
         marginTop: 30,

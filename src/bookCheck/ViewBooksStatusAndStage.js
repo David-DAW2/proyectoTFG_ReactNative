@@ -74,6 +74,9 @@ export default function ViewBooksStatusAndStage({ navigation }) {
   return (
     <NativeBaseProvider style={styles.baseColor} theme={theme}>
       <ScrollView style={styles.baseColor}>
+      <View style={styles.headerNav}>
+        <Text style={styles.headerText}>Revisiones por etapa y estado </Text>
+      </View>
         <View style={styles.container}>
           <SelectDropdown
             data={etapas}
@@ -94,7 +97,7 @@ export default function ViewBooksStatusAndStage({ navigation }) {
             dropdownStyle={styles.dropdown2DropdownStyle}
             rowStyle={styles.dropdown2RowStyle}
             rowTextStyle={styles.dropdown2RowTxtStyle}
-            defaultButtonText="Elija una opción"
+                                    defaultButtonText='Elija un curso'
           />
           <Text></Text>
           <SelectDropdown
@@ -117,8 +120,8 @@ export default function ViewBooksStatusAndStage({ navigation }) {
             dropdownStyle={styles.dropdown2DropdownStyle}
             rowStyle={styles.dropdown2RowStyle}
             rowTextStyle={styles.dropdown2RowTxtStyle}
-            defaultButtonText="Elija una opción"
-          />
+            defaultButtonText='Elija un estado'
+            />
         </View>
         <Text></Text>
         {(datosCargados) && (<Button type="solid" buttonStyle={styles.buttonStyle} onPress={() => getReviewsStatus()} >
@@ -170,6 +173,22 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign:"center",
     marginTop:50
+},headerNav: {
+  width: '100%',
+  paddingVertical: 10,
+  alignItems: 'center',
+  marginBottom: 30,
+  marginTop:0
+  ,    backgroundColor: '#007932',
+
+  
+},
+headerText: {
+  paddingTop:10,
+
+  fontSize: 24,
+  color: '#FFF',
+  fontFamily:'NotoSansHK-Medium-Alphabetic'
 },
 
   colorBase: {
@@ -180,7 +199,7 @@ const styles = StyleSheet.create({
   drop: {
     marginLeft: 100
   },
-  baseColor: { backgroundColor: '#b8f7d4' },
+  baseColor: { backgroundColor: 'white' },
   container: {
     marginTop: 50,
 
@@ -203,6 +222,7 @@ const styles = StyleSheet.create({
     borderBottomEndRadius: 5,
     borderColor: '#000',
     marginTop: 10,
+    borderWidth:1
   },
   dropdown2BtnTxtStyle: {
     color: '#000',

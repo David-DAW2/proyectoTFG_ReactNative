@@ -47,7 +47,6 @@ export default function SearchBook({ navigation }) {
       const observaciones = observations[index];
       const id = students && students.data && students.data[index] ? students.data[index].id : null;
   
-      // Verificar si el estado y la observación tienen valores definidos
       if (estado !== undefined || observaciones !== undefined) {
         acc.push({
           id,
@@ -100,7 +99,6 @@ export default function SearchBook({ navigation }) {
   const sendReview = async () => {
     const token = await AsyncStorage.getItem('token');
 
-    // Configurar los encabezados de la solicitud
     const headers = {
       'Content-Type': 'application/json',
 
@@ -187,7 +185,7 @@ export default function SearchBook({ navigation }) {
   const dataTable = students && students.data
   ? students.data.map((item, index) => {
       return [
-        `${item.id} - ${item.name} ${item.surnames}  `,
+         <Text style={styles.surnameStyle}>({item.id}{item.review_id}) -{item.name} {item.surnames}</Text> ,
         <SelectDropdown
           data={estados}
           onSelect={(selectedItem) => {
@@ -200,7 +198,7 @@ export default function SearchBook({ navigation }) {
           buttonTextAfterSelection={(selectedItem) => selectedItem}
           rowTextForSelection={(item) => item}
           dropdownIconPosition="right"
-          buttonStyle={styles.dropdown2BtnStyle}
+          buttonStyle={styles.dropdown2BtnStyle2}
           buttonTextStyle={styles.dropdown2BtnTxtStyle}
           dropdownStyle={styles.dropdown2DropdownStyle}
           rowStyle={styles.dropdown2RowStyle}
@@ -210,7 +208,7 @@ export default function SearchBook({ navigation }) {
         />,
         <TextArea
         fontSize={15}
-          style={styles.textAreaStyle} // Agrega esta línea para definir el estilo del TextArea
+          style={styles.textAreaStyle} 
           onChangeText={(textValue) => {
             setObservations((prevOptions) => {
               const updatedOptions = [...prevOptions];
@@ -224,14 +222,18 @@ export default function SearchBook({ navigation }) {
   : [];
 
   const state = {
-    HeadTable: ['nombre', 'Estado', 'observaciones'],
+    HeadTable: ['Nombre', 'Estado', 'Observaciones'],
     DataTable: dataTable,
   };
   return (
     <NativeBaseProvider style={styles.baseColor} theme={theme}>
-      <ScrollView contentContainerStyle={styles.baseColor}>
+      <ScrollView style={styles.baseColor}>
+      <View style={styles.headerNav}>
+        <Text style={styles.headerText}>Crear revisión </Text>
+      </View>
         <View style={styles.container}>
-          <SelectDropdown
+  
+                    <SelectDropdown
             data={options.data}
             onSelect={handleSelect}
             buttonTextAfterSelection={(selectedItem, index) => {
@@ -246,8 +248,8 @@ export default function SearchBook({ navigation }) {
             dropdownStyle={styles.dropdown2DropdownStyle}
             rowStyle={styles.dropdown2RowStyle}
             rowTextStyle={styles.dropdown2RowTxtStyle}
-            defaultButtonText="Elija una opción"
-          />
+            defaultButtonText='Elija curso y asignatura'
+            />
           <Text></Text>
           <SelectDropdown
             data={etapas}
@@ -270,8 +272,8 @@ export default function SearchBook({ navigation }) {
             dropdownStyle={styles.dropdown2DropdownStyle}
             rowStyle={styles.dropdown2RowStyle}
             rowTextStyle={styles.dropdown2RowTxtStyle}
-            defaultButtonText="Elija una opción"
-          />
+            defaultButtonText='Elija una etapa'
+            />
         </View>
         <Text></Text>
         {(unitySelected != '') && (subjectSelected != '') && ((!revFinalizada)) && (selectedEtapa) && (<Button type="solid"  buttonStyle={styles.buttonStyle} onPress={() => getStudents()} >
@@ -282,7 +284,9 @@ export default function SearchBook({ navigation }) {
         {(unitySelected != '') && (subjectSelected != '') && (!revFinalizada) && (selectedEtapa) && (<NativeBaseProvider>
           <View style={styles.tableColor}>
             <Table borderStyle={{ borderWidth: 1, borderColor: '#ffa1d2' }}>
-              <Row data={state.HeadTable} />
+              <Row 
+              style={styles.headerRowStyle}             textStyle={styles.rowTextStyle}
+              data={state.HeadTable} />
               <Rows data={state.DataTable} />
             </Table>
           </View>
@@ -306,29 +310,56 @@ export default function SearchBook({ navigation }) {
   );
 }
 
-const newColorTheme = {
-  brand: {
-    900: '#5B8DF6',
-    800: '#ffffff',
-    700: '#cccccc',
-  },
-};
+
 
 const theme = extendTheme({
-  colors: '#b8f7d4'
+  colors: 'white'
 });
 const styles = StyleSheet.create({
-  baseColor:{backgroundColor:'#b8f7d4',
+  baseColor:{backgroundColor:'white',
+},
+headerNav: {
+  width: '100%',
+  paddingVertical: 10,
+  alignItems: 'center',
+  marginBottom: 30,
+  marginTop:0
+  ,    backgroundColor: '#007932',
+
+  
+},
+headerText: {
+  paddingTop:10,
+
+  fontSize: 24,
+  color: '#FFF',
+  fontFamily:'NotoSansHK-Medium-Alphabetic'
 },
   tableColor:{backgroundColor:'#FFF'},
-
+  surnameStyle:{
+    fontFamily:'NotoSansHK-Medium-Alphabetic',
+    fontSize:15
+  },
+  headerRowStyle: {
+    alignSelf:'center',
+    backgroundColor: 'green',
+    height: 50
+  },
   dropdown2BtnStyle: {
     width: '80%',
     height: 50,
     backgroundColor: '#FFF',
     borderRadius: 8,
     borderColor: '#000',
-    alignSelf: 'center', // Add this line to center the button horizontally
+    alignSelf: 'center', 
+    borderWidth:1
+  }, dropdown2BtnStyle2: {
+    width: '80%',
+    height: 50,
+    backgroundColor: '#FFF',
+    borderRadius: 8,
+    borderColor: '#000',
+    alignSelf: 'center', 
   },
   dropdown2BtnTxtStyle: {
     color: '#000',
@@ -356,7 +387,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   container: {
-    backgroundColor: '#b8f7d4',
+    backgroundColor: 'White',
 
     alignItems: 'center',
     marginTop: 40
@@ -372,7 +403,10 @@ const styles = StyleSheet.create({
 
 
   },
-
+  rowTextStyle: {
+    textAlign: 'center',
+    fontWeight: "bold"
+  },
   textAreaStyle: {
     borderWidth: 1,
     borderColor: '#000',

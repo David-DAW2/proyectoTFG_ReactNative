@@ -12,14 +12,14 @@ export default function HomeBooks({ navigation }) {
 
   return (
     <View style={styles.container} >
-      <TouchableOpacity style={styles.image} activeOpacity={0.3}>
+<TouchableOpacity style={styles.containerImage  } activeOpacity={0.3}>
 
-        <Image
-          source={require('../images/escudoMachado.jpg')
-          } style={styles.image}
+<Image
+  source={require('../images/escudoMachado.jpg')
+  } style={styles.image}
 
-        />
-      </TouchableOpacity>
+/>
+</TouchableOpacity>
       <Button buttonStyle={styles.button}
         ViewComponent={LinearGradient}
         linearGradientProps={{
@@ -43,20 +43,13 @@ export default function HomeBooks({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  image: {
-    position:'absolute',
-    width: 120,
-    height: 120,
-    resizeMode: 'contain',
-    top:20
-
-  },
+ 
   container: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#b8f7d4'
+    backgroundColor: 'white'
   },
   button: {
     width: 210,
@@ -65,4 +58,24 @@ const styles = StyleSheet.create({
     margin: 10,
     borderRadius: 10,
   },
+  image: {
+    position:'absolute',
+    width: 120,
+    height: 120,
+    resizeMode: 'center',
+    top:20,
+    borderWidth: 1, 
+    borderRadius:6,
+
+  borderColor: 'black', 
+},
+containerImage: {
+  position:'absolute',
+  width: 120,
+  height: 120,
+  resizeMode: 'center',
+  top:20,
+
+
+},
 });

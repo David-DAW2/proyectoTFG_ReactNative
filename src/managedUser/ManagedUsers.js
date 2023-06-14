@@ -109,7 +109,6 @@ export default function ManagedUsers({ navigation }) {
     return userData.data && userData.data.length > 0 ? userData.data.slice(startIndex, endIndex) : [];
   };
 
-  // Función para manejar el cambio de página
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
@@ -117,7 +116,11 @@ export default function ManagedUsers({ navigation }) {
   return (
 
     <NativeBaseProvider style={styles.baseColor} theme={theme}>
+
       <ScrollView contentContainerStyle={styles.baseColor}>
+      <View style={styles.headerNav}>
+        <Text style={styles.headerText}>Gestión usuarios</Text>
+      </View>
         <View>
           <TextInput value={userSearch} onChangeText={setUserSearch} style={styles.TextIn}></TextInput>
           <Button type="solid" title={"Buscar usuario"} buttonStyle={styles.buttonStyle} onPress={() => getUserSearch()}>
@@ -146,17 +149,11 @@ export default function ManagedUsers({ navigation }) {
                   }}
                 >
 
-                  <DataTable.Row key={item.id}>
-                    <DataTable.Cell textStyle={{ fontFamily: 'Feather', marginLeft: 10 }} style={styles.cell}>{item.name}</DataTable.Cell>
-                    <DataTable.Cell textStyle={{
-                      fontFamily: 'NotoSansHK-Medium',
-                      marginLeft: 10
-                    }}>{item.email}</DataTable.Cell>
-                    <DataTable.Cell textStyle={{
-                      fontFamily: 'NotoSansHK-Medium',
-                      marginLeft: 10
-                    }}>{item.id}</DataTable.Cell>
-                  </DataTable.Row>
+<DataTable.Row key={item.id} style={styles.tableRow}>
+  <DataTable.Cell textStyle={{ fontFamily: 'NotoSansHK-Medium', }} style={[styles.cell, styles.firstCell]}>{item.name}</DataTable.Cell>
+  <DataTable.Cell textStyle={{ fontFamily: 'NotoSansHK-Medium', marginLeft: 10 }}>{item.email}</DataTable.Cell>
+  <DataTable.Cell textStyle={{ fontFamily: 'NotoSansHK-Medium' }}>{item.id}</DataTable.Cell>
+</DataTable.Row>
                 </TouchableHighlight>
 
               ))}
@@ -176,30 +173,40 @@ export default function ManagedUsers({ navigation }) {
     </NativeBaseProvider>
   );
 }
-const newColorTheme = {
-  brand: {
-    900: '#5B8DF6',
-    800: '#ffffff',
-    700: '#cccccc',
-  },
-};
+
 
 const theme = extendTheme({
-  colors: '#b8f7d4'
+  colors: 'white'
 });
 const styles = StyleSheet.create({
+  
   baseColor: {
 
 
-    backgroundColor: '#b8f7d4', height: 1000
+    backgroundColor: 'white', height: 1000
   },
-
+  headerNav: {
+    width: '100%',
+    paddingVertical: 10,
+    alignItems: 'center',
+    marginTop:0
+    ,    backgroundColor: '#007932',
+  
+    
+  },
+  headerText: {
+    paddingTop:10,
+  
+    fontSize: 24,
+    color: '#FFF',
+    fontFamily:'NotoSansHK-Medium-Alphabetic'
+  },
 
   TextIn: {
     fontFamily: 'NotoSansHK-Medium',
 
     marginLeft: 42,
-    marginTop: 30,
+    marginTop: 70,
     width: '80%',
     height: 40,
     margin: 3,
@@ -213,7 +220,7 @@ const styles = StyleSheet.create({
 
   },
   container: {
-    backgroundColor: '#b8f7d4',
+    backgroundColor: 'white',
     width: '100%',
 
     flex: 1,

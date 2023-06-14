@@ -12,7 +12,7 @@ export default function HomeBooksDirective({ navigation }) {
 
   return (
     <View style={styles.container} >
-      <TouchableOpacity style={styles.image} activeOpacity={0.3}>
+      <TouchableOpacity style={styles.containerImage  } activeOpacity={0.3}>
 
         <Image
           source={require('../images/escudoMachado.jpg')
@@ -47,16 +47,28 @@ const styles = StyleSheet.create({
     position:'absolute',
     width: 120,
     height: 120,
-    resizeMode: 'contain',
-    top:20
+    resizeMode: 'center',
+    top:20,
+    borderWidth: 1, 
+    borderRadius:6,
 
-  },
+  borderColor: 'black', 
+},
+containerImage: {
+  position:'absolute',
+  width: 120,
+  height: 120,
+  resizeMode: 'center',
+  top:20,
+
+
+},
   container: {
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#b8f7d4'
+    backgroundColor: 'white'
   },
   button: {
     width: 210,

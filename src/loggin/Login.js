@@ -16,12 +16,13 @@ export default function Login({ navigation }) {
   const handleSelectChange = (itemValue) => {
     setRol(itemValue);
   };
-  const saveData = async (user, id ,rol,token) => {
+  const saveData = async (user, id ,rol,token,pass) => {
     try {
       await AsyncStorage.setItem('user', user);
       await AsyncStorage.setItem('id', id);
       await AsyncStorage.setItem('rol', rol);
       await AsyncStorage.setItem('token', token);
+      await AsyncStorage.setItem('pass', pass);
 
 
 
@@ -45,7 +46,7 @@ export default function Login({ navigation }) {
     };
   
     fetchCSRFCookie();
-    saveData(user, '', rol, ''); // Pasa los valores correctos a saveData()
+    saveData(user, '', rol, ''); 
   }, [rol]);
   
   const loginVerify = () => {
@@ -60,15 +61,15 @@ export default function Login({ navigation }) {
         console.log("Success", responseData);
   
         if (responseData.success) {
-          saveData(user, responseData.data.user_id.toString(), responseData.data.userRole, responseData.data.token);
+          saveData(user, responseData.data.user_id.toString(), responseData.data.userRole, responseData.data.token,pass);
           navigation.navigate('Home');
         } else {
-          setPass(''); // Reiniciar el valor del campo pass
+          setPass('');
           Alert.alert('Credenciales incorrectas'); // Mostrar el prompt de notificación
         }
       })
       .catch(error => {
-        setPass(''); // Reiniciar el valor del campo pass
+        setPass(''); 
         Alert.alert('Credenciales incorrectas'); // Mostrar el prompt de notificación
       });
   };
@@ -85,7 +86,7 @@ export default function Login({ navigation }) {
 
   return (
     <LinearGradient
-      colors={['#b8f7d4', '#b8f7d4']}
+      colors={['white', 'white']}
       start={{ x: 0, y: 0 }}
       end={{ x: 0, y: 0 }}
       style={styles.container}
@@ -105,12 +106,13 @@ export default function Login({ navigation }) {
         <TextInput style={styles.input} value={pass} onChangeText={setPass} secureTextEntry={true} />
       </View>
 
-      <View>
+      <View style={{borderWidth:1, borderRadius:2, marginTop:10}}>
         <Picker
           selectedValue={rol}
           onValueChange={handleSelectChange}
           style={styles.picker}
           placeholder={"Elija rol"}
+          
         >
           <Picker.Item label="profesor" value="PROFESOR" />
           <Picker.Item label="coordinador TIC" value="COORDINADOR TIC" />
@@ -125,13 +127,14 @@ export default function Login({ navigation }) {
   )
 }
 
-// Resto del código...
 
 
 const styles = StyleSheet.create({
   imageContainer: {
     marginTop: 20,
     alignItems: 'center',
+    width:'100%',    backgroundColor: '#b8f7d4'
+
   },
   image: {
     width: 200,
@@ -141,11 +144,10 @@ const styles = StyleSheet.create({
   picker: {
     alignItems: 'center',
     justifyContent: 'center', 
-    marginTop: 20,
     backgroundColor: '#fff',
     borderRadius: 5,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: 'black',
     width: 250
   },
   buttonStyle:{
@@ -163,7 +165,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   Text: {
-    marginTop: 40,
+    marginTop: 0,
 
     fontSize: 15,
     marginBottom:0,
@@ -193,12 +195,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   inputContainer: {
-    marginTop: 3,
     width: '90%',
     margin: 3,
     borderWidth: 1,
     paddingTop: 0,
-    justifyContent: 'center', // centrado vertical
+    justifyContent: 'center', 
+    borderRadius:3
   },
   input: {
     height: 40,

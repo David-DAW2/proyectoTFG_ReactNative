@@ -6,6 +6,7 @@ import { TextInput } from 'react-native-paper';
 import { Button } from '@rneui/themed';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios';
+import { NativeBaseProvider } from 'native-base';
 export default function DetailReviewReport({ route }) {
   React.useLayoutEffect(() => {
     navigation.setOptions({ headerShown: false });
@@ -37,7 +38,6 @@ export default function DetailReviewReport({ route }) {
       status:'RESUELTA',
       observation:observaciones
     }
-        // Obtener el token de AsyncStorage
         const token = await AsyncStorage.getItem('token');
       
         console.log(params.status)
@@ -45,7 +45,6 @@ export default function DetailReviewReport({ route }) {
         console.log(token)
 
 
-        // Configurar los encabezados de la solicitud
         const headers = {
           Authorization: `Bearer ${token}`,
         };
@@ -54,6 +53,8 @@ export default function DetailReviewReport({ route }) {
         console.log(response.data);
         if(response.data.success){
           Alert.alert("La incidencia ha sido cerrada correctamente")
+          incidencia.status='RESUELTA'
+
           navigateToDetailReport()
         }
       })
@@ -68,7 +69,6 @@ export default function DetailReviewReport({ route }) {
       status:'EN PROCESO',
       observation:observaciones
     }
-        // Obtener el token de AsyncStorage
         const token = await AsyncStorage.getItem('token');
       
         console.log(params.status)
@@ -76,7 +76,6 @@ export default function DetailReviewReport({ route }) {
         console.log(token)
 
 
-        // Configurar los encabezados de la solicitud
         const headers = {
           Authorization: `Bearer ${token}`,
         };
@@ -85,7 +84,9 @@ export default function DetailReviewReport({ route }) {
         console.log(response.data);
         if(response.data.success){
           Alert.alert("La incidencia ha sido cerrada correctamente")
+          incidencia.status='EN PROCESO'
           navigateToDetailReport()
+
         }
       })
       .catch(error => {
@@ -97,7 +98,6 @@ export default function DetailReviewReport({ route }) {
     const params={
       observation:observaciones
     }
-        // Obtener el token de AsyncStorage
         const token = await AsyncStorage.getItem('token');
       
         console.log(params.status)
@@ -105,7 +105,6 @@ export default function DetailReviewReport({ route }) {
         console.log(token)
 
 
-        // Configurar los encabezados de la solicitud
         const headers = {
           Authorization: `Bearer ${token}`,
         };
@@ -122,7 +121,14 @@ export default function DetailReviewReport({ route }) {
   }
 
   return (
+    <NativeBaseProvider>
+                        <View style={styles.header}>
+        <Text style={styles.headerText}>ID: {incidencia.id}</Text>
+        </View>
     <View style={styles.container}>
+
+    
+
             <Text style={styles.text}>{incidencia.name}</Text>
       <Text style={styles.text}>{incidencia.status}</Text>
       <Text style={styles.text}>{incidencia.description}</Text>
@@ -130,6 +136,7 @@ export default function DetailReviewReport({ route }) {
 
    
         <TextInput
+          placeholder='añada un comentario....'
           style={styles.textInput}
           value={observaciones}
           onChangeText={handleObservacionesChange}
@@ -148,6 +155,7 @@ export default function DetailReviewReport({ route }) {
         Marcar como resuelta
       </Button>
     </View>
+    </NativeBaseProvider>
   );
 }
 
@@ -156,9 +164,22 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     paddingTop: 50,
-backgroundColor: '#85FEE6',
-alignItems:'center'
+    backgroundColor: 'white',alignItems:'center'
+  }, header: {
+    width: '100%',
+    backgroundColor: '#007932',
+    paddingVertical: 10,
+    alignItems: 'center',
+    marginTop:0
+    
   },
+  headerText: {
+    paddingTop:10,
+
+    fontSize: 24,
+    color: '#FFF',
+    fontFamily:'NotoSansHK-Medium-Alphabetic'
+},
   text: {
     fontFamily:'NotoSansHK-Medium-Alphabetic',
     width:'90%',
@@ -177,8 +198,9 @@ alignItems:'center'
     borderWidth: 1,
     borderColor: 'black',
     padding: 10,
-    width:'100%',
+    width:'90%',
     marginVertical: 5,
+    backgroundColor:'white'
   },
   buttonStyle:{
     padding:'auto',

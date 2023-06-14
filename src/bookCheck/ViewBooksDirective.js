@@ -145,32 +145,32 @@ export default function ViewBooksDirective({ navigation }) {
       return [
         `(${item.student_id}${item.review_id}) - ${item.name} ${item.surnames}  `,
         <SelectDropdown
-      data={estados}
-      defaultValue={reviewData.data[index].status}
-      onSelect={(selectedValue) => {
-        setReviewData((prevData) => {
-          const updatedData = { ...prevData };
-          updatedData.data[index].status = selectedValue;
-          return updatedData;
-        });
-      }}
-      buttonStyle={styles.dropdown2BtnStyle}
-      buttonTextStyle={styles.dropdown2BtnTxtStyle}
-    />,
-    <TextArea
-    fontFamily={'NotoSansHK-Medium-Alphabetic'}
-    fontSize={15}
-        style={styles.textAreaStyle}
-        onChangeText={(textValue) => {
-          setReviewData((prevData) => {
-            const updatedData = { ...prevData };
-            updatedData.data[index].observation = textValue;
-            return updatedData;
-          });
-        }}
-        value={reviewData.data[index].observation}
+          data={estados}
+          defaultValue={reviewData.data[index].status}
+          onSelect={(selectedValue) => {
+            setReviewData((prevData) => {
+              const updatedData = { ...prevData };
+              updatedData.data[index].status = selectedValue;
+              return updatedData;
+            });
+          }}
+          buttonStyle={styles.dropdown2BtnStyle2}
+          buttonTextStyle={styles.dropdown2BtnTxtStyle}
+        />,
+        <TextArea
+          fontFamily={'NotoSansHK-Medium-Alphabetic'}
+          fontSize={15}
+          style={styles.textAreaStyle}
+          onChangeText={(textValue) => {
+            setReviewData((prevData) => {
+              const updatedData = { ...prevData };
+              updatedData.data[index].observation = textValue;
+              return updatedData;
+            });
+          }}
+          value={reviewData.data[index].observation}
 
-      ></TextArea>
+        ></TextArea>
       ];
     })
     : [];
@@ -191,9 +191,8 @@ export default function ViewBooksDirective({ navigation }) {
       const observaciones = reviewData && reviewData.data && reviewData.data[index] ? reviewData.data[index].observation : '';
       const id = reviewData && reviewData.data && reviewData.data[index] ? reviewData.data[index].student_id : null;
       const review_id = reviewData && reviewData.data && reviewData.data[index] ? reviewData.data[index].review_id : null;
-  
-      // Verificar si el estado y la observación tienen valores definidos y si el estado es válido
-      if (estado !== undefined && observaciones !== undefined && (estado==='BIEN' ||estado==='REGULAR' ||estado==='MAL' ||estado==='NO REVISADO' )) {
+
+      if (estado !== undefined && observaciones !== undefined && (estado === 'BIEN' || estado === 'REGULAR' || estado === 'MAL' || estado === 'NO REVISADO')) {
         acc.push({
           id,
           review_id,
@@ -203,10 +202,10 @@ export default function ViewBooksDirective({ navigation }) {
       } else {
         setValidacionOk(false);
       }
-  
+
       return acc;
     }, []);
-  
+
     if (newData.length > 0 && validacionOk) {
       setRevisionData(newData);
       setCambiosApli(true);
@@ -216,7 +215,7 @@ export default function ViewBooksDirective({ navigation }) {
       setValidacionOk(true)
     }
   };
-  
+
 
 
   const createReviewForSend = () => {
@@ -247,89 +246,92 @@ export default function ViewBooksDirective({ navigation }) {
   useEffect(() => {
     createReviewForSend();
   }, [revisionData]);
-  
+
   const sendReview = () => {
 
 
     createReviewForSend()
 
-  
 
-    
-      const headers = {
-        'Content-Type': 'application/json',
-  
-        Authorization: `Bearer ${token}`,
-      };
-      const params = {
-        reviews: reviewForSend
-      }
-      console.log("datos a enviar" + params)
-      axios.put('https://tfg-fmr.alwaysdata.net/back/public/api/update/reviews', params, { headers })
-        .then(response => {
-          if (response.data) {
-  
-            Alert.alert("se ha actualizado la revisión con exito")
-            getReviews()
-            setEditar(false)
-            // navigation.navigate('HomeBooks')
-          }
+
+
+    const headers = {
+      'Content-Type': 'application/json',
+
+      Authorization: `Bearer ${token}`,
+    };
+    const params = {
+      reviews: reviewForSend
+    }
+    console.log("datos a enviar" + params)
+    axios.put('https://tfg-fmr.alwaysdata.net/back/public/api/update/reviews', params, { headers })
+      .then(response => {
+        if (response.data) {
+
+          Alert.alert("se ha actualizado la revisión con exito")
+          getReviews()
+          setEditar(false)
+          // navigation.navigate('HomeBooks')
         }
-        ).catch(error => {
-          Alert.alert("Error al actualizar la revisión");
-          console.log(error)
-        })
+      }
+      ).catch(error => {
+        Alert.alert("Error al actualizar la revisión");
+        console.log(error)
+      })
 
 
-    
 
-    // Configurar los encabezados de la solicitud
+
 
   }
 
   return (
     <NativeBaseProvider style={styles.baseColor} theme={theme}>
       <ScrollView style={styles.baseColor}>
+        <View style={styles.headerNav}>
+          <Text style={styles.headerText}>Todas las revisiones </Text>
+        </View>
         <View >
-        <View style={styles.container}>
-          <SelectDropdown style={styles.drop}
-            data={options.data}
-            onSelect={handleSelect}
-            buttonTextAfterSelection={(selectedItem, index) => {
-              return '(' + selectedItem.review_type + ') '+selectedItem.unity_name + '/' + selectedItem.subject_name ;
-            }}
-            rowTextForSelection={(item, index) => {
-              return '(' + item.review_type + ') '+item.unity_name + '/' + item.subject_name ;
-            }}
-            dropdownIconPosition={'right'}
-            buttonStyle={styles.dropdown2BtnStyle}
-            buttonTextStyle={styles.dropdown2BtnTxtStyle}
-            dropdownStyle={styles.dropdown2DropdownStyle}
-            rowStyle={styles.dropdown2RowStyle}
-            rowTextStyle={styles.dropdown2RowTxtStyle}
-            defaultButtonText="Elija una opción"
-          />
-          <Text></Text>
-        
-</View>
-    
-            <Button type="solid"  buttonStyle={styles.buttonStyle}onPress={getReviews} style={styles.button}>
-              Mostrar Resultados
-            </Button>
-       
-  
-            <View style={styles.tableContainer}>
+          <View style={styles.container}>
+            <SelectDropdown style={styles.drop}
+              data={options.data}
+              onSelect={handleSelect}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                return '(' + selectedItem.review_type + ') ' + selectedItem.unity_name + '/' + selectedItem.subject_name;
+              }}
+              rowTextForSelection={(item, index) => {
+                return '(' + item.review_type + ') ' + item.unity_name + '/' + item.subject_name;
+              }}
+              dropdownIconPosition={'right'}
+              buttonStyle={styles.dropdown2BtnStyle}
+              buttonTextStyle={styles.dropdown2BtnTxtStyle}
+              dropdownStyle={styles.dropdown2DropdownStyle}
+              rowStyle={styles.dropdown2RowStyle}
+              rowTextStyle={styles.dropdown2RowTxtStyle}
+              defaultButtonText="Elija una revisión existente"
+            />
+            <Text></Text>
+
+          </View>
+
+          <Button type="solid" buttonStyle={styles.buttonStyle} onPress={getReviews} style={styles.button}>
+            Mostrar Resultados
+          </Button>
+
+
+          <View style={styles.tableContainer}>
             {!editar ? <ReviewTable /> : <NativeBaseProvider>
               <View style={styles.tableColor}>
                 <Table borderStyle={{ borderWidth: 1, borderColor: '#ffa1d2' }}>
-                  <Row  data={state.HeadTable} />
+                  <Row textStyle={styles.rowTextStyle} style={styles.headerRowStyle}
+                    data={state.HeadTable} />
                   <Rows data={state.DataTable} />
                 </Table>
               </View>
             </NativeBaseProvider>}
 
           </View>
-          {(verEditar) && (unitySelected !== '') && (subjectSelected !== '')  && (
+          {(verEditar) && (unitySelected !== '') && (subjectSelected !== '') && (
             <Button type="solid" onPress={() => handleChangeEdit()}
               buttonStyle={styles.buttonStyle}
               buttonTextStyle={styles.buttonTextStyle}
@@ -352,7 +354,7 @@ export default function ViewBooksDirective({ navigation }) {
       </ScrollView>
     </NativeBaseProvider>
   );
-              }  
+}
 
 const newColorTheme = {
   brand: {
@@ -366,25 +368,42 @@ const theme = extendTheme({
   colors: '#b8f7d4'
 });
 const styles = StyleSheet.create({
-  colorBase:{
+  colorBase: {
     backgroundColor: '#b8f7d4'
 
   },
+  headerNav: {
+    width: '100%',
+    paddingVertical: 10,
+    alignItems: 'center',
+    marginBottom: 30,
+    marginTop: 0
+    , backgroundColor: '#007932',
+
+
+  },
+  headerText: {
+    paddingTop: 10,
+
+    fontSize: 24,
+    color: '#FFF',
+    fontFamily: 'NotoSansHK-Medium-Alphabetic'
+  },
   buttonStyle: {
- marginLeft:105,
+    marginLeft: 105,
     width: 200,
     height: 60,
     borderRadius: 10,
     backgroundColor: '#007932'
-},
-  drop:{
-    marginLeft:100
   },
-  baseColor: { backgroundColor: '#b8f7d4' },
+  drop: {
+    marginLeft: 100
+  },
+  baseColor: { backgroundColor: 'white' },
   container: {
-    marginTop:50,
+    marginTop: 50,
 
-    marginBottom:30
+    marginBottom: 30
 
   },
   dropdown2BtnStyle: {
@@ -392,10 +411,20 @@ const styles = StyleSheet.create({
     height: 50,
     backgroundColor: '#FFF',
     borderRadius: 8,
-    borderBottomColor:'#000',
-    borderBottomEndRadius:5,
+    borderBottomColor: '#000',
+    borderBottomEndRadius: 5,
     borderColor: '#000',
     marginTop: 10,
+    borderWidth: 1
+  }, dropdown2BtnStyle2: {
+    width: '100%',
+    height: 50,
+    backgroundColor: '#FFF',
+    borderRadius: 8,
+    borderBottomColor: '#000',
+    borderBottomEndRadius: 5,
+    borderColor: '#000',
+    marginTop: 10
   },
   dropdown2BtnTxtStyle: {
     color: '#000',
@@ -406,11 +435,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#444',
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
-    
+
   },
-  dropdown2RowStyle: { backgroundColor: '#FFF', borderBottomColor: '#C5C5C5',
-  height: 90, // Ajusta la altura de las celdas según tus necesidades
- },
+  dropdown2RowStyle: {
+    backgroundColor: '#FFF', borderBottomColor: '#C5C5C5',
+    height: 90, // Ajusta la altura de las celdas según tus necesidades
+  },
   dropdown2RowTxtStyle: {
     color: '#000',
     textAlign: 'left',
@@ -418,7 +448,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   tableContainer: {
-    backgroundColor:"#FFF",
+    backgroundColor: "#FFF",
     borderWidth: 1,
     borderColor: '#000',
     marginTop: 20,
@@ -429,15 +459,15 @@ const styles = StyleSheet.create({
   },
   headerRowStyle: {
     backgroundColor: 'green',
-    height:50
+    height: 50
   },
   dataRowStyle: {
-    height:50
+    height: 50
 
   },
   rowTextStyle: {
     textAlign: 'center'
-    ,fontFamily:'NotoSansHK-Medium-Alphabetic'
+    , fontFamily: 'NotoSansHK-Medium-Alphabetic'
   },
   button: {
     marginTop: 20,

@@ -47,7 +47,6 @@ export default function ViewBooks({ navigation }) {
       try {
         const tokenUser = await AsyncStorage.getItem('token');
         setToken(tokenUser)
-        // Haz algo con el token, como guardarlo en el estado del componente
       } catch (error) {
         console.log('Error al obtener el token desde AsyncStorage:', error);
       }
@@ -161,7 +160,7 @@ export default function ViewBooks({ navigation }) {
           return updatedData;
         });
       }}
-      buttonStyle={styles.dropdown2BtnStyle}
+      buttonStyle={styles.dropdown2BtnStyle2}
       buttonTextStyle={styles.dropdown2BtnTxtStyle}
     />
     ,
@@ -184,7 +183,7 @@ export default function ViewBooks({ navigation }) {
   : [];
 
   const state = {
-    HeadTable: ['nombre', 'Estado', 'observaciones'],
+    HeadTable: ['Nombre', 'Estado', 'Observaciones'],
     DataTable: dataTableEdit,
   };
   const isValidStatus = (estado) => {
@@ -198,7 +197,6 @@ export default function ViewBooks({ navigation }) {
       const id = reviewData && reviewData.data && reviewData.data[index] ? reviewData.data[index].student_id : null;
       const review_id = reviewData && reviewData.data && reviewData.data[index] ? reviewData.data[index].review_id : null;
   
-      // Verificar si el estado y la observación tienen valores definidos y si el estado es válido
       if (estado !== undefined && observaciones !== undefined && (estado==='BIEN' ||estado==='REGULAR' ||estado==='MAL' ||estado==='NO REVISADO' )) {
         acc.push({
           id,
@@ -296,13 +294,15 @@ export default function ViewBooks({ navigation }) {
 
     
 
-    // Configurar los encabezados de la solicitud
 
   }
 
   return (
     <NativeBaseProvider style={styles.baseColor} theme={theme}>
       <ScrollView style={styles.baseColor}>
+      <View style={styles.headerNav}>
+        <Text style={styles.headerText}>Mis revisiones </Text>
+      </View>
         <View >
           <View style={styles.container}>
             <SelectDropdown style={styles.drop}
@@ -320,7 +320,7 @@ export default function ViewBooks({ navigation }) {
               dropdownStyle={styles.dropdown2DropdownStyle}
               rowStyle={styles.dropdown2RowStyle}
               rowTextStyle={styles.dropdown2RowTxtStyle}
-              defaultButtonText="Elija una opción"
+              defaultButtonText="Elija una revisión"
             />
             <Text></Text>
             <SelectDropdown
@@ -342,7 +342,7 @@ export default function ViewBooks({ navigation }) {
               dropdownStyle={styles.dropdown2DropdownStyle}
               rowStyle={styles.dropdown2RowStyle}
               rowTextStyle={styles.dropdown2RowTxtStyle}
-              defaultButtonText="Elija una opción"
+              defaultButtonText="Elija una etapa"
             />
           </View>
           {(unitySelected !== '') && (subjectSelected !== '') && (selectedEtapa) && (
@@ -354,8 +354,9 @@ export default function ViewBooks({ navigation }) {
           <View style={styles.tableContainer}>
             {!editar ? <ReviewTable /> : <NativeBaseProvider>
               <View style={styles.tableColor}>
-                <Table borderStyle={{ borderWidth: 1, borderColor: '#ffa1d2' }}>
-                  <Row data={state.HeadTable} />
+                <Table borderStyle={{ borderWidth: 1, borderColor: '#ffa1d2', textAlign:'center' }}>
+                  <Row data={state.HeadTable} style={styles.headerRowStyle}
+                  textStyle={styles.rowTextStyle}/>
                   <Rows data={state.DataTable} />
                 </Table>
               </View>
@@ -406,7 +407,7 @@ const styles = StyleSheet.create({
   drop: {
     marginLeft: 100
   },
-  baseColor: { backgroundColor: '#b8f7d4' },
+  baseColor: { backgroundColor: 'white' },
   buttonStyle: {
     marginTop: 10,
     marginBottom: 20,
@@ -430,6 +431,15 @@ const styles = StyleSheet.create({
     fontSize:15
   },
   dropdown2BtnStyle: {
+    width: '80%',
+    height: 50,
+    backgroundColor: '#FFF',
+    borderRadius: 8,
+    borderColor: '#000',
+    marginTop: 10,
+    borderWidth:1
+  },
+  dropdown2BtnStyle2: {
     width: '80%',
     height: 50,
     backgroundColor: '#FFF',
@@ -478,5 +488,21 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 20,
+  },headerNav: {
+    width: '100%',
+    paddingVertical: 10,
+    alignItems: 'center',
+    marginBottom: 30,
+    marginTop:0
+    ,    backgroundColor: '#007932',
+  
+    
+  },
+  headerText: {
+    paddingTop:10,
+  
+    fontSize: 24,
+    color: '#FFF',
+    fontFamily:'NotoSansHK-Medium-Alphabetic'
   },
 });

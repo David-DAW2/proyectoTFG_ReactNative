@@ -65,21 +65,25 @@ export default function CreateTeacher({ navigation }) {
 
     const añadirCursoAsig = () => {
         if (selectedUnity && selectedSubject) {
-          const isAlreadyAdded = selectedCourses.some(course => course.unity === selectedUnity && course.subject === selectedSubject);
-          if (isAlreadyAdded) {
-            Alert.alert("Curso y asignatura ya están insertados");
-          } else {
-            setSelectedCourses(prevCourses =>
-              prevCourses.concat({ unity: selectedUnity, subject: selectedSubject })
-            );
-          }
+            const isAlreadyAdded = selectedCourses.some(course => course.unity === selectedUnity && course.subject === selectedSubject);
+            if (isAlreadyAdded) {
+                Alert.alert("Curso y asignatura ya están insertados");
+            } else {
+                setSelectedCourses(prevCourses =>
+                    prevCourses.concat({ unity: selectedUnity, subject: selectedSubject })
+                );
+            }
         } else {
-          Alert.alert("No ha elegido asignatura o curso");
+            Alert.alert("No ha elegido asignatura o curso");
         }
         setSelectedUnity('');
         setSelectedSubject('');
-      };
-      
+        setUnities([])
+        setSubjects([])
+        getUnities()
+
+    };
+
 
     useEffect(() => {
         console.log(selectedCourses)
@@ -111,21 +115,7 @@ export default function CreateTeacher({ navigation }) {
         console.log(subjects)
     }, [subjects])
     useEffect(() => {
-        const getUnities = () => {
 
-            const headers = {
-                authorization: `Bearer ${token}`,
-            };
-            axios
-                .get(`https://tfg-fmr.alwaysdata.net/back/public/api/unities`, { headers })
-                .then(response => {
-                    setUnities(response.data)
-                })
-                .catch(error => {
-                    console.log('Error al obtener los usuarios:', error);
-                    Alert.alert('Error al modificar usuario');
-                });
-        }
         if (token) {
             console.log(token)
 
@@ -134,6 +124,25 @@ export default function CreateTeacher({ navigation }) {
         }
     }, [token]);
 
+    useEffect(() => {
+        setSelectedSubject('')
+        getSubjects()
+    }, [selectedUnity]);
+    const getUnities = () => {
+
+        const headers = {
+            authorization: `Bearer ${token}`,
+        };
+        axios
+            .get(`https://tfg-fmr.alwaysdata.net/back/public/api/unities`, { headers })
+            .then(response => {
+                setUnities(response.data)
+            })
+            .catch(error => {
+                console.log('Error al obtener los usuarios:', error);
+                Alert.alert('Error al modificar usuario');
+            });
+    }
 
     useEffect(() => {
         console.log(selectedUnity)
@@ -143,56 +152,67 @@ export default function CreateTeacher({ navigation }) {
         console.log(selectedSubject)
     }, [selectedSubject]);
     const createTeacher = () => {
-
-        if (selectedCourses.length === 0) {
-            Alert.alert('Error', 'Debes seleccionar al menos un curso y una asignatura');
+        if (nameTeacher === '' || idTeacher === '' || emailTeacher === '' || passTeacher === '') {
+            Alert.alert('Hay campos vacios');
             return;
+
+        } else {
+            if (emailTeacher.includes('@')) {
+                if (selectedCourses.length === 0) {
+                    Alert.alert('Debes seleccionar al menos un curso y una asignatura');
+                    return;
+                }
+                if (passTeacher !== confirmPassTeacher) {
+                    Alert.alert('Error', 'Las contraseñas no coinciden');
+                    return;
+
+                } else {
+                    Alert.alert(
+                        'Confirmación',
+                        '¿Estás seguro de que quieres guardar los cambios?',
+                        [
+                            {
+                                text: 'Cancelar',
+                                style: 'cancel',
+                            },
+                            {
+                                text: 'Guardar',
+
+                                onPress: () => {
+                                    const params = {
+                                        id: idTeacher,
+                                        name: nameTeacher,
+                                        email: emailTeacher,
+                                        password: passTeacher,
+                                        c_password: confirmPassTeacher,
+                                        taughts: createUniqueObject()
+                                    };
+                                    console.log(createUniqueObject())
+
+                                    console.log(params)
+                                    const headers = {
+                                        authorization: `Bearer ${token}`,
+                                    };
+
+                                    axios
+                                        .post('https://tfg-fmr.alwaysdata.net/back/public/api/user/teacher', params, { headers })
+                                        .then(response => {
+                                            Alert.alert('Profesor creado con éxito');
+                                        })
+                                        .catch(error => {
+                                            console.log('Error al obtener los usuarios:', error.message);
+                                            Alert.alert('Error al modificar usuario o el usuario ya existe');
+                                        });
+                                },
+                            },
+                        ]
+                    );
+                }
+            } else {
+                Alert.alert("Email no válido")
+                return;
+            }
         }
-        if (passTeacher!==confirmPassTeacher) {
-            Alert.alert('Error', 'Las contraseñas no coinciden');
-            return;       
-
-        }
-        Alert.alert(
-            'Confirmación',
-            '¿Estás seguro de que quieres guardar los cambios?',
-            [
-                {
-                    text: 'Cancelar',
-                    style: 'cancel',
-                },
-                {
-                    text: 'Guardar',
-  
-                    onPress: () => {
-                        const params = {
-                            id: idTeacher,
-                            name: nameTeacher,
-                            email: emailTeacher,
-                            password: passTeacher,
-                            c_password: confirmPassTeacher,
-                            taughts: createUniqueObject()
-                        };
-                        console.log(createUniqueObject())
-
-                        console.log(params)
-                        const headers = {
-                            authorization: `Bearer ${token}`,
-                        };
-
-                        axios
-                            .post('https://tfg-fmr.alwaysdata.net/back/public/api/user/teacher', params, { headers })
-                            .then(response => {
-                                Alert.alert('Profesor creado con éxito');
-                            })
-                            .catch(error => {
-                                console.log('Error al obtener los usuarios:', error.message);
-                                Alert.alert('Error al modificar usuario o el usuario ya existe');
-                            });
-                    },
-                },
-            ]
-        );
     };
 
 
@@ -207,119 +227,138 @@ export default function CreateTeacher({ navigation }) {
     }
 
     return (
-        <View style={styles.container2}>
-            <NativeBaseProvider theme={theme}>
+        <NativeBaseProvider style={styles.baseColor} theme={theme}>
 
-                <ScrollView style={styles.baseColor}>
-                    <Text style={styles.textGenerated}>ID profesor:</Text>
-                    <TextInput style={styles.TextIn} value={idTeacher} onChangeText={setIdTeacher} />
-                    <Text style={styles.textGenerated}>Nombre profesor:</Text>
-                    <TextInput style={styles.TextIn} value={nameTeacher} onChangeText={setNameTeacher} />
-                    <Text style={styles.textGenerated}>Email profesor:</Text>
+            <ScrollView style={styles.baseColor}>
+            <View style={styles.headerNav}>
+        <Text style={styles.headerText}>Crear profesor</Text>
+      </View>
+                <Text style={styles.textGenerated}>ID profesor:</Text>
+                <TextInput style={styles.TextIn} value={idTeacher} onChangeText={setIdTeacher} />
+                <Text style={styles.textGenerated}>Nombre profesor:</Text>
+                <TextInput style={styles.TextIn} value={nameTeacher} onChangeText={setNameTeacher} />
+                <Text style={styles.textGenerated}>Email profesor:</Text>
 
-                    <TextInput style={styles.TextIn} value={emailTeacher} onChangeText={setEmailTeacher} />
-                    <Text style={styles.textGenerated}>contraseña profesor:</Text>
+                <TextInput style={styles.TextIn} value={emailTeacher} onChangeText={setEmailTeacher} />
+                <Text style={styles.textGenerated}>contraseña profesor:</Text>
 
-                    <TextInput style={styles.TextIn} value={passTeacher}   secureTextEntry={true}
- onChangeText={setPassTeacher} />
+                <TextInput style={styles.TextIn} value={passTeacher} secureTextEntry={true}
+                    onChangeText={setPassTeacher} />
 
-                    <Text style={styles.textGenerated}>confirmación contraseña profesor:</Text>
-                    <TextInput style={styles.TextIn}   secureTextEntry={true}
- value={confirmPassTeacher} onChangeText={setConfirmPassTeacher} />
+                <Text style={styles.textGenerated}>confirmación contraseña profesor:</Text>
+                <TextInput style={styles.TextIn} secureTextEntry={true}
+                    value={confirmPassTeacher} onChangeText={setConfirmPassTeacher} />
 
-                    <View style={styles.containerButtons}>
-                        <Button type="solid" title={"Guardar cambios"} buttonStyle={styles.buttonStyle} onPress={() => createTeacher()}>
+                <View style={styles.containerButtons}>
+                    <Button type="solid" title={"Guardar cambios"} buttonStyle={styles.buttonStyle} onPress={() => createTeacher()}>
 
-                        </Button>
+                    </Button>
 
-                        <Button type="solid" title={"añadir curso/Asig"} buttonStyle={styles.buttonStyle} onPress={() => añadirCursoAsig()} style={styles.button}>
-                            Guardar cambios
-                        </Button>
-                    </View>
+                    <Button type="solid" title={"añadir curso/Asig"} buttonStyle={styles.buttonStyle} onPress={() => añadirCursoAsig()} style={styles.button}>
+                        Guardar cambios
+                    </Button>
+                </View>
 
-                    <View style={styles.container}>
-                        {(
-                            <>
-                                <SelectDropdown
-                                    data={unities.data}
-                                    onSelect={(selectedItem, index) => {
-                                        setSelectedUnity(selectedItem.name)
-                                    }}
-                                    buttonTextAfterSelection={(selectedItem, index) => {
+                <View style={styles.container}>
+                    {(
+                        <>
+                            <SelectDropdown
+                                data={unities.data}
+                                onSelect={(selectedItem, index) => {
+                                    setSelectedUnity(selectedItem.name)
+                                }}
+                                buttonTextAfterSelection={(selectedItem, index) => {
 
-                                        return selectedUnity;
-                                    }}
-                                    rowTextForSelection={(item, index) => {
-                                        return item.name;
-                                    }}
-                                    dropdownIconPosition={'right'}
-                                    buttonStyle={styles.dropdown2BtnStyle}
-                                    buttonTextStyle={styles.dropdown2BtnTxtStyle}
-                                    dropdownStyle={styles.dropdown2DropdownStyle}
-                                    rowStyle={styles.dropdown2RowStyle}
-                                    rowTextStyle={styles.dropdown2RowTxtStyle}
-                                    defaultButtonText='Elija un curso'
-                                    />
-                                {(unitiesCargados) && (<SelectDropdown
+                                    return selectedUnity;
+                                }}
+                                rowTextForSelection={(item, index) => {
+                                    return item.name;
+                                }}
+                                dropdownIconPosition={'right'}
+                                buttonStyle={styles.dropdown2BtnStyle}
+                                buttonTextStyle={styles.dropdown2BtnTxtStyle}
+                                dropdownStyle={styles.dropdown2DropdownStyle}
+                                rowStyle={styles.dropdown2RowStyle}
+                                rowTextStyle={styles.dropdown2RowTxtStyle}
+                                defaultButtonText='Elija un curso'
+                            />
+                            {(unitiesCargados) && (<SelectDropdown
 
-                                    data={subjects.data}
-                                    onSelect={(selectedItem, index) => {
-                                        setSelectedSubject(selectedItem.name)
-                                    }}
-                                    buttonTextAfterSelection={(selectedItem, index) => {
-                                        return selectedSubject;
-                                    }}
-                                    rowTextForSelection={(item, index) => {
-                                        return item.name;
-                                    }}
-                                    dropdownIconPosition={'right'}
-                                    buttonStyle={styles.dropdown2BtnStyle}
-                                    buttonTextStyle={styles.dropdown2BtnTxtStyle}
-                                    dropdownStyle={styles.dropdown2DropdownStyle}
-                                    rowStyle={styles.dropdown2RowStyle}
-                                    rowTextStyle={styles.dropdown2RowTxtStyle}
-                                    defaultButtonText='Elija una asginatura'
-                                    />)}
+                                data={subjects.data}
+                                onSelect={(selectedItem, index) => {
+                                    setSelectedSubject(selectedItem.name)
+                                }}
+                                buttonTextAfterSelection={(selectedItem, index) => {
+                                    return selectedSubject;
+                                }}
+                                rowTextForSelection={(item, index) => {
+                                    return item.name;
+                                }}
+                                dropdownIconPosition={'right'}
+                                buttonStyle={styles.dropdown2BtnStyle}
+                                buttonTextStyle={styles.dropdown2BtnTxtStyle}
+                                dropdownStyle={styles.dropdown2DropdownStyle}
+                                rowStyle={styles.dropdown2RowStyle}
+                                rowTextStyle={styles.dropdown2RowTxtStyle}
+                                defaultButtonText='Elija una asginatura'
+                            />)}
 
-                                <Text></Text>
-                                <Text style={styles.text}>Cursos y asignaturas añadidas</Text>
-                                <Text></Text>
+                            <Text></Text>
+                            <Text style={styles.text}>Cursos y asignaturas añadidas</Text>
+                            <Text></Text>
 
-                                {selectedCourses.map((value, index) => {
-                                    return (
-                                        <View key={index}>
-                                            <Text style={styles.textGenerated}>{value.unity} - {value.subject}</Text>
+                            {selectedCourses.map((value, index) => {
+                                return (
+                                    <View key={index}>
+                                        <Text style={styles.textGenerated}>{value.unity} - {value.subject}</Text>
 
-                                        </View>
-                                    );
-                                })}
+                                    </View>
+                                );
+                            })}
 
-                            </>
-                        )}
+                        </>
+                    )}
 
-                    </View>
-                </ScrollView>
-            </NativeBaseProvider>
-        </View>
+                </View>
+            </ScrollView>
+        </NativeBaseProvider>
     );
 } const theme = extendTheme({
     colors: {
-      primary: "#b8f7d4"
+        primary: "#b8f7d4"
     }
-  });
-  
+});
+
 const styles = StyleSheet.create({
     containerButtons: {
         flexDirection: 'row'
     },
     container: {
         justifyContent: 'center',
-        backgroundColor: '#b8f7d4',
+        backgroundColor: 'white',
         width: '100%',
         height: '100%',
         flex: 1,
         alignItems: 'center'
-    },
+    }, baseColor: {
+        backgroundColor: 'white',
+    },headerNav: {
+        width: '100%',
+        paddingVertical: 10,
+        alignItems: 'center',
+        marginBottom: 30,
+        marginTop:0
+        ,    backgroundColor: '#007932',
+      
+        
+      },
+      headerText: {
+        paddingTop:10,
+      
+        fontSize: 24,
+        color: '#FFF',
+        fontFamily:'NotoSansHK-Medium-Alphabetic'
+      },
     text: {
         fontSize: 18,
         textAlign: 'center',
@@ -327,7 +366,7 @@ const styles = StyleSheet.create({
         borderColor: 'black',
         padding: 10,
         marginVertical: 5,
-      },
+    },
     container2: {
         flexDirection: 'row',
         marginTop: 20,
@@ -335,7 +374,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         backgroundColor: '#b8f7d4',
 
-    },  TextIn: {
+    }, TextIn: {
         marginTop: 5,
         width: '90%',
         height: 60,
@@ -347,12 +386,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         fontSize: 18,
-      },
-      textGenerated:{
-        fontFamily:'NotoSansHK-Medium',
-        marginTop:5,
-        marginLeft:15
-      },
+    },
+    textGenerated: {
+        fontFamily: 'NotoSansHK-Medium',
+        marginTop: 5,
+        marginLeft: 45
+    },
     containerCheck: {
         marginTop: 20,
         marginLeft: 5,
@@ -366,34 +405,36 @@ const styles = StyleSheet.create({
         height: 50,
         backgroundColor: '#FFF',
         borderRadius: 8,
-        borderBottomColor:'#000',
-        borderBottomEndRadius:5,
+        borderBottomColor: '#000',
+        borderBottomEndRadius: 5,
         borderColor: '#000',
         marginTop: 10,
-      },
-      dropdown2BtnTxtStyle: {
+        borderWidth:1
+    },
+    dropdown2BtnTxtStyle: {
         color: '#000',
         textAlign: 'center',
         fontWeight: 'bold',
-      },
-      dropdown2DropdownStyle: {
+    },
+    dropdown2DropdownStyle: {
         backgroundColor: '#444',
         borderBottomLeftRadius: 12,
         borderBottomRightRadius: 12,
-        
-      },
-      dropdown2RowStyle: { backgroundColor: '#FFF', borderBottomColor: '#C5C5C5',
-      height: 90, // Ajusta la altura de las celdas según tus necesidades
-     },
-      dropdown2RowTxtStyle: {
+
+    },
+    dropdown2RowStyle: {
+        backgroundColor: '#FFF', borderBottomColor: '#C5C5C5',
+        height: 90, // Ajusta la altura de las celdas según tus necesidades
+    },
+    dropdown2RowTxtStyle: {
         color: '#000',
         textAlign: 'left',
         fontWeight: 'bold',
         fontSize: 14,
-      },
+    },
     TextIn: {
         marginTop: 10,
-        width: '90%',
+        width: '80%',
         height: 60,
         margin: 3,
         borderWidth: 1,
@@ -403,6 +444,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         fontSize: 18,
+        alignSelf: 'center'
     },
     text: {
         fontSize: 18,
@@ -410,16 +452,16 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: 'black',
         padding: 10,
-        color:'white',
+        color: 'white',
         marginVertical: 5,
         backgroundColor: 'green',
         textAlign: 'center',
-        fontWeight:"bold"
+        fontWeight: "bold"
     },
     buttonStyle: {
         marginTop: 10,
         marginBottom: 20,
-        marginLeft:40,
+        marginLeft: 40,
         width: 140,
         height: 60,
         borderRadius: 10,

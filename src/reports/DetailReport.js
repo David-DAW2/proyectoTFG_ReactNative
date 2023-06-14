@@ -13,18 +13,16 @@ export default function DetailReport({ route }) {
   const { incidencia } = route.params;
   const navigation = useNavigation();
   const navegateToMyReports=()=>{
-    navigation.navigate('Home')
+    navigation.navigate('MyReports')
 }
 
 const deleteIncidence = async () => {
   const token = await AsyncStorage.getItem('token');
 
-  // Configurar los encabezados de la solicitud
   const headers = {
     Authorization: `Bearer ${token}`,
   };
 
-  // Mostrar la alerta de confirmación
   Alert.alert(
     'Confirmación',
     '¿Seguro que quiere eliminar la incidencia?',
@@ -58,6 +56,9 @@ const deleteIncidence = async () => {
   return (
     
     <View style={styles.container}>
+            <View style={styles.header}>
+        <Text style={styles.headerText}>ID: {incidencia.id}</Text>
+      </View>
       <Text style={styles.text}>{incidencia.status}</Text>
       <Text style={styles.text}>{incidencia.description}</Text>
       <Text style={styles.text}>{incidencia.created_at}</Text>
@@ -77,13 +78,27 @@ const deleteIncidence = async () => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#b8f7d4',
+    backgroundColor: 'white',
     width: '100%',
     height: '100%',
-    paddingTop: 50
-,alignItems:'center'
+alignItems:'center'
 
+  }, header: {
+    width: '100%',
+    backgroundColor: '#007932',
+    paddingVertical: 10,
+    alignItems: 'center',
+    marginBottom: 150,
+    marginTop:0
+    
   },
+  headerText: {
+    paddingTop:10,
+
+    fontSize: 24,
+    color: '#FFF',
+    fontFamily:'NotoSansHK-Medium-Alphabetic'
+},
   text: {
     fontFamily:'NotoSansHK-Medium-Alphabetic',
     width:'90%',
